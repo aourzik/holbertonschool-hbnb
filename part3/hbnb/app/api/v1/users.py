@@ -7,7 +7,8 @@ api = Namespace('users', description='User operations')
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
-    'email': fields.String(required=True, description='Email of the user')
+    'email': fields.String(required=True, description='Email of the user'),
+    'password': fields.String(required=True, description='Password of the user')
 })
 
 @api.route('/')
@@ -19,7 +20,10 @@ class UserList(Resource):
         """Register a new user"""
         try:
             user = facade.create_user(api.payload)
-            return user.to_dict(), 201
+            return {
+                "id": user.id,
+                "message": "User successfully created"
+            }, 201
         except ValueError as e:
             return {"Error": str(e)}, 400
         except TypeError as e:
@@ -40,7 +44,9 @@ class UserResource(Resource):
         user = facade.get_user(user_id)
         if not user:
             return {"Error": "User not found"}, 404
-        return user.to_dict(), 200
+        user = user.to_dict()
+        user.pop("password")
+        return user, 200
 
     @api.expect(user_model)
     @api.response(200, 'User updated successfully')

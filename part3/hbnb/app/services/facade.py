@@ -121,13 +121,17 @@ class HBnBFacade:
     def create_user(self, user_data):
         user_data = dict(user_data)
         email = user_data.get("email")
+        password = user_data.pop("password", None)
         if not email:
             raise ValueError("Email is required")
+        if password is None:
+            raise ValueError("Password is required")
         existing = self.user_repo.get_by_attribute("email", email)
         if existing:
             raise ValueError("Email is already used")
 
         user = User(**user_data)
+        user.hash_password(password)
         self.user_repo.add(user)
         return user
 
