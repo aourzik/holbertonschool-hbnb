@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('users', description='User operations')
 
@@ -33,7 +34,12 @@ class UserList(Resource):
     def get(self):
         """Retrieve a list of all users"""
         all_users = facade.get_all_users()
-        return [x.to_dict() for x in all_users], 200
+        users_list = []
+        for user in all_users:
+            user_dict = user.to_dict()
+            user_dict.pop("password", None)  # Removes password if it exists
+            users_list.append(user_dict)
+        return users_list, 200
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -45,18 +51,26 @@ class UserResource(Resource):
         if not user:
             return {"Error": "User not found"}, 404
         user = user.to_dict()
-        user.pop("password")
+        user.pop("password", None)
         return user, 200
 
+    @jwt_required()
     @api.expect(user_model)
     @api.response(200, 'User updated successfully')
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data or email already taken')
     def put(self, user_id):
         """Update entire user details by ID"""
+        current_user = get_jwt_identity()
+        data = api.payload
         try:
-            user = facade.update_user(user_id, api.payload)
-            return user.to_dict(), 200
+            if str(user_id) != str(current_user):
+                return {"Error": 'Unauthorized action'}, 403
+            if "email" in data or "password" in data:
+                return {"Error": 'You cannot modify email or password'}, 400
+            user = facade.update_user(user_id, data).to_dict()
+            user.pop("password", None)
+            return user, 200
         except ValueError as e:
             if "not found" in str(e).lower():
                 return {"Error": str(e)}, 404
