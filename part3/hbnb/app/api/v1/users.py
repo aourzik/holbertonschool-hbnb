@@ -23,8 +23,14 @@ class UserList(Resource):
         current_user = get_jwt()
         if not current_user.get('is_admin'):
             return {'Error': 'Admin privileges required'}, 403
+        safe_data = {
+            "first_name": api.payload.get("first_name"),
+            "last_name": api.payload.get("last_name"),
+            "email": api.payload.get("email"),
+            "password": api.payload.get("password")
+        }
         try:
-            user = facade.create_user(api.payload)
+            user = facade.create_user(safe_data)
             return {
                 "id": user.id,
                 "message": "User successfully created"
