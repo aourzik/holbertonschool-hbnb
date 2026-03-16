@@ -23,7 +23,11 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def get_by_attribute(self, attr_name, attr_value):
+    def get_first_by_attribute(self, attr_name, attr_value):
+        pass
+
+    @abstractmethod
+    def get_all_by_attribute(self, attr_name, attr_value):
         pass
 
 
@@ -50,10 +54,13 @@ class InMemoryRepository(Repository):
         if obj_id in self._storage:
             del self._storage[obj_id]
 
-    def get_by_attribute(self, attr_name, attr_value):
-        results = [obj for obj in self._storage.values() if getattr(obj, attr_name, None) == attr_value]
-        if len(results) == 1:
-            return results[0]
-        elif len(results) > 1:
-            return results
+    def get_all_by_attribute(self, attr_name, attr_value):
+        """Always returns a list (empty if no matches)."""
+        return [obj for obj in self._storage.values() if getattr(obj, attr_name, None) == attr_value]
+
+    def get_first_by_attribute(self, attr_name, attr_value):
+        """Returns the first matched object, or None."""
+        for obj in self._storage.values():
+            if getattr(obj, attr_name, None) == attr_value:
+                return obj
         return None

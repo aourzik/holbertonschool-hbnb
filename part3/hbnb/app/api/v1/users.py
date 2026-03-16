@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('users', description='User operations')
 
@@ -14,11 +14,15 @@ user_model = api.model('User', {
 
 @api.route('/')
 class UserList(Resource):
+    @jwt_required()
     @api.expect(user_model)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Invalid input data or email already registered')
     def post(self):
         """Register a new user"""
+        current_user = get_jwt()
+        if not current_user.get('is_admin'):
+            return {'Error': 'Admin privileges required'}, 403
         try:
             user = facade.create_user(api.payload)
             return {
@@ -37,7 +41,7 @@ class UserList(Resource):
         users_list = []
         for user in all_users:
             user_dict = user.to_dict()
-            user_dict.pop("password", None)  # Removes password if it exists
+            user_dict.pop("password", None)
             users_list.append(user_dict)
         return users_list, 200
 
@@ -61,13 +65,19 @@ class UserResource(Resource):
     @api.response(400, 'Invalid input data or email already taken')
     def put(self, user_id):
         """Update entire user details by ID"""
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()
+        current_user = get_jwt()
         data = api.payload
-        try:
-            if str(user_id) != str(current_user):
-                return {"Error": 'Unauthorized action'}, 403
+        is_admin = current_user.get('is_admin', False)
+
+        if not is_admin:
+            if str(user_id) != str(current_user_id):
+                return {"Error": 'Admin privileges required'}, 403
             if "email" in data or "password" in data:
                 return {"Error": 'You cannot modify email or password'}, 400
+            if "is_admin" in data:
+                return {"Error": 'You cannot modify admin privileges'}, 403
+        try:
             user = facade.update_user(user_id, data).to_dict()
             user.pop("password", None)
             return user, 200
@@ -78,6 +88,23 @@ class UserResource(Resource):
         except TypeError as e:
             return {"Error": str(e)}, 400
 
+    @jwt_required()
+    @api.response(200, 'User deleted successfully')
+    @api.response(404, 'User not found')
+    @api.response(403, 'Unauthorized action')
+    def delete(self, user_id):
+        """Delete a user account"""
+        current_user_id = get_jwt_identity()
+        current_user = get_jwt()
+        is_admin = current_user.get('is_admin', False)
+        if not is_admin and str(user_id) != str(current_user_id):
+            return {"Error": 'Unauthorized action'}, 403
+        try:
+            facade.delete_user(user_id)
+            return {"message": "User deleted successfully"}, 200
+        except ValueError as e:
+            return {"Error": str(e)}, 404
+
 @api.route('/email/<email>')
 class UserByEmail(Resource):
     @api.response(200, 'User details retrieved successfully')
@@ -87,4 +114,6 @@ class UserByEmail(Resource):
         user = facade.get_user_by_email(email)
         if not user:
             return {"Error": "User not found"}, 404
-        return user.to_dict(), 200
+        user_dict = user.to_dict()
+        user_dict.pop("password", None)
+        return user_dict, 200
