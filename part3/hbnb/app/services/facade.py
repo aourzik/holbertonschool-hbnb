@@ -52,7 +52,7 @@ class HBnBFacade:
         if not amenity:
             raise ValueError("Amenity not found")
 
-        amenity.update(amenity_data)
+        self.amenity_repo.update(amenity.id, amenity_data)
         return amenity
 
     def delete_amenity(self, amenity_id):
@@ -119,7 +119,7 @@ class HBnBFacade:
                 amenity = self.amenity_repo.get(amenity_id)
                 place.add_amenity(amenity)
 
-        place.update(place_data)
+        self.place_repo.update(place.id, place_data)
         return place
 
     def delete_place(self, place_id):
@@ -130,7 +130,6 @@ class HBnBFacade:
         for review in self.review_repo.get_all():
             if review.place_id == place_id:
                 self.review_repo.delete(review.id)
-                review.place = None
         self.place_repo.delete(place_id)
 
 ################ USER ##################### 
@@ -175,11 +174,12 @@ class HBnBFacade:
             if existing and existing.id != user_id:
                 raise ValueError("Email is already used")
 
-        user.update(user_data)
         if password is not None:
             user.hash_password(password)
+            user_data["password"] = user.password
+        self.user_repo.update(user.id, user_data)
         return user
-    
+
     def delete_user(self, user_id):
         user = self.user_repo.get(user_id)
         if not user:
@@ -240,7 +240,7 @@ class HBnBFacade:
         if not review:
             raise ValueError("Review not found")
 
-        review.update(review_data)
+        self.review_repo.update(review.id, review_data)
         return review
 
     def delete_review(self, review_id):
