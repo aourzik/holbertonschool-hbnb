@@ -5,11 +5,16 @@ from app import create_app
 from app.services import facade
 
 
+ADMIN_EMAIL = "admin@hbnb.io"
+ADMIN_PASSWORD = "admin1234"
+
+
 class APITestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = self.app.test_client()
         self._reset_in_memory_storage()
+        self.admin_token = self.login_user(ADMIN_EMAIL, ADMIN_PASSWORD)
 
     def _reset_in_memory_storage(self):
         """Keep tests isolated because facade repositories are global singletons."""
@@ -17,6 +22,15 @@ class APITestCase(unittest.TestCase):
         facade.place_repo._storage.clear()
         facade.review_repo._storage.clear()
         facade.amenity_repo._storage.clear()
+        facade.create_user(
+            {
+                "first_name": "Admin",
+                "last_name": "System",
+                "email": ADMIN_EMAIL,
+                "password": ADMIN_PASSWORD,
+                "is_admin": True,
+            }
+        )
 
     def make_user_payload(self, prefix="user"):
         token = uuid.uuid4().hex[:8]
@@ -29,7 +43,11 @@ class APITestCase(unittest.TestCase):
 
     def create_user(self, prefix="user"):
         payload = self.make_user_payload(prefix)
-        response = self.client.post("/api/v1/users/", json=payload)
+        response = self.client.post(
+            "/api/v1/users/",
+            json=payload,
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(response.status_code, 201, response.get_json())
         data = response.get_json()
         return data["id"], payload
@@ -48,7 +66,11 @@ class APITestCase(unittest.TestCase):
         return {"Authorization": f"Bearer {token}"}
 
     def create_amenity(self, name="WiFi"):
-        response = self.client.post("/api/v1/amenities/", json={"name": name})
+        response = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": name},
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(response.status_code, 201, response.get_json())
         return response.get_json()
 
