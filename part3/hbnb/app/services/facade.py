@@ -240,11 +240,6 @@ class HBnBFacade:
         if not review:
             raise ValueError("Review not found")
 
-        if "user_id" in review_data and not self.user_repo.get(review_data["user_id"]):
-            raise ValueError("User not found")
-        if "place_id" in review_data and not self.place_repo.get(review_data["place_id"]):
-            raise ValueError("Place not found")
-
         review.update(review_data)
         return review
 
