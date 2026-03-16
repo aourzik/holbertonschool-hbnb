@@ -27,14 +27,25 @@ class ReviewList(Resource):
         """Register a new review"""
         current_user = get_jwt_identity()
         try:
-            api.payload["user_id"] = current_user
-            review = facade.create_review(api.payload)
-            place = facade.get_place(review.place_id)
+            payload = api.payload or {}
+            if not isinstance(payload, dict):
+                return {"Error": "Invalid payload"}, 400
+
+            required_fields = ["text", "rating", "place_id"]
+            missing_fields = [field for field in required_fields if field not in payload]
+            if missing_fields:
+                return {"Error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
+
+            payload["user_id"] = current_user
+            place = facade.get_place(payload["place_id"])
+            if not place:
+                return {"Error": "Place not found"}, 404
             if place.owner.id == current_user:
                 return {"Error": 'You cannot review your own place'}, 400
-            already_reviewed = any(review.get('user_id') == current_user for review in place.reviews)
+            already_reviewed = any(rev.user_id == current_user for rev in place.reviews)
             if already_reviewed:
                 return {"Error": "You have already reviewed this place"}, 400
+            review = facade.create_review(payload)
             return review.to_dict(), 201
         except (ValueError, TypeError) as e:
             return {"Error": str(e)}, 400
@@ -83,9 +94,11 @@ class ReviewResource(Resource):
         current_user = get_jwt_identity()
         try:
             review = facade.get_review(review_id)
+            if not review:
+                return {"Error": "Review not found"}, 404
             if review.user_id != current_user:
                 return {"Error": 'Unauthorized action'}, 403
             facade.delete_review(review_id)
             return {"Message": "Review deleted successfully"}, 200
-        except TypeError:
+        except (TypeError, ValueError):
             return {"Error": "Review not found"}, 404

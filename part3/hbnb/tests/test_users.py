@@ -1,32 +1,104 @@
-import unittest
-import sys
-import os
+from tests.helpers import APITestCase
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-# Permet d'importer 'app' proprement même quand le test est lancé directement
-from app import create_app
 
-class TestUserEndpoints(unittest.TestCase):
-    def setUp(self):
-        self.app = create_app()
-        self.client = self.app.test_client()
+class TestUsers(APITestCase):
+    def test_create_user_success(self):
+        payload = self.make_user_payload("newuser")
+        response = self.client.post("/api/v1/users/", json=payload)
 
-    def test_create_user(self):
-        response = self.client.post('/api/v1/users/', json={
-            "first_name": "Jane",
-            "last_name": "Doe",
-            "email": "jane.doe@example.com"
-        })
         self.assertEqual(response.status_code, 201)
-        self.assertIn("id", response.get_json())
+        data = response.get_json()
+        self.assertIn("id", data)
+        self.assertEqual(data.get("message"), "User successfully created")
 
-    def test_create_user_invalid_data(self):
-        response = self.client.post('/api/v1/users/', json={
-            "first_name": "",
-            "last_name": "",
-            "email": "invalid"
-        })
+    def test_create_user_duplicate_email_fails(self):
+        payload = self.make_user_payload("dup")
+        response1 = self.client.post("/api/v1/users/", json=payload)
+        self.assertEqual(response1.status_code, 201)
+
+        response2 = self.client.post("/api/v1/users/", json=payload)
+        self.assertEqual(response2.status_code, 400)
+
+    def test_get_users_list_excludes_password(self):
+        self.create_user("list1")
+        self.create_user("list2")
+
+        response = self.client.get("/api/v1/users/")
+        self.assertEqual(response.status_code, 200)
+
+        users = response.get_json()
+        self.assertGreaterEqual(len(users), 2)
+        for user in users:
+            self.assertNotIn("password", user)
+
+    def test_get_user_by_id(self):
+        user_id, payload = self.create_user("getid")
+
+        response = self.client.get(f"/api/v1/users/{user_id}")
+
+        self.assertEqual(response.status_code, 200)
+        user = response.get_json()
+        self.assertEqual(user["id"], user_id)
+        self.assertEqual(user["email"], payload["email"])
+        self.assertNotIn("password", user)
+
+    def test_get_user_by_email(self):
+        user_id, payload = self.create_user("getemail")
+
+        response = self.client.get(f"/api/v1/users/email/{payload['email']}")
+
+        self.assertEqual(response.status_code, 200)
+        user = response.get_json()
+        self.assertEqual(user["id"], user_id)
+        self.assertEqual(user["email"], payload["email"])
+        self.assertNotIn("password", user)
+
+    def test_update_user_requires_jwt(self):
+        user_id, payload = self.create_user("needjwt")
+
+        response = self.client.put(
+            f"/api/v1/users/{user_id}",
+            json={"first_name": "Updated"},
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_update_user_forbidden_for_other_user(self):
+        user1_id, user1_payload = self.create_user("user1")
+        user2_id, user2_payload = self.create_user("user2")
+        token_user1 = self.login_user(user1_payload["email"], user1_payload["password"])
+
+        response = self.client.put(
+            f"/api/v1/users/{user2_id}",
+            json={"first_name": "ShouldFail"},
+            headers=self.auth_header(token_user1),
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_user_cannot_modify_email_or_password(self):
+        user_id, payload = self.create_user("cantchange")
+        token = self.login_user(payload["email"], payload["password"])
+
+        response = self.client.put(
+            f"/api/v1/users/{user_id}",
+            json={"email": "new@example.com"},
+            headers=self.auth_header(token),
+        )
+
         self.assertEqual(response.status_code, 400)
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_update_user_success(self):
+        user_id, payload = self.create_user("updateself")
+        token = self.login_user(payload["email"], payload["password"])
+
+        response = self.client.put(
+            f"/api/v1/users/{user_id}",
+            json={"first_name": "Updated", "last_name": "Name"},
+            headers=self.auth_header(token),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user = response.get_json()
+        self.assertEqual(user["first_name"], "Updated")
+        self.assertEqual(user["last_name"], "Name")

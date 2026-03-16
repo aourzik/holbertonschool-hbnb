@@ -37,8 +37,17 @@ class PlaceList(Resource):
         """Register a new place"""
         current_user = get_jwt_identity()
         try:
-            api.payload["owner_id"] = current_user
-            place = facade.create_place(api.payload).to_dict()
+            payload = api.payload or {}
+            if not isinstance(payload, dict):
+                return {"Error": "Invalid payload"}, 400
+
+            required_fields = ["title", "price", "latitude", "longitude", "amenities"]
+            missing_fields = [field for field in required_fields if field not in payload]
+            if missing_fields:
+                return {"Error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
+
+            payload["owner_id"] = current_user
+            place = facade.create_place(payload).to_dict()
             return place, 201
         except (ValueError, TypeError) as e:
             return {"Error": str(e)}, 400

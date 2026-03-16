@@ -14,11 +14,18 @@ class Login(Resource):
     @api.expect(login_model)
     def post(self):
         """Authenticate user and return a JWT token"""
-        credentials = api.payload
+        credentials = api.payload or {}
+        if not isinstance(credentials, dict):
+            return {'error': 'Invalid payload'}, 400
 
-        user = facade.get_user_by_email(credentials['email'])
+        email = credentials.get('email')
+        password = credentials.get('password')
+        if not email or not password:
+            return {'error': 'Email and password are required'}, 400
 
-        if not user or not user.verify_password(credentials['password']):
+        user = facade.get_user_by_email(email)
+
+        if not user or not user.verify_password(password):
             return {'error': 'Invalid credentials'}, 401
 
         access_token = create_access_token(

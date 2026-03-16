@@ -14,11 +14,11 @@ class BaseModel:
         self.updated_at = datetime.now()
 
     def update(self, data):
-        """Update the attributes of the object based on the provided dictionary"""
+        ignored_keys = ['id', 'created_at', 'updated_at']
         for key, value in data.items():
-            if hasattr(self, key):
+            if key not in ignored_keys and hasattr(self, key) and not callable(getattr(self, key)):
                 setattr(self, key, value)
-                self.save()
+        self.save()
 
     def to_dict(self):
         result = {}

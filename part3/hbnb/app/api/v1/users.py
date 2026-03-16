@@ -37,7 +37,7 @@ class UserList(Resource):
         users_list = []
         for user in all_users:
             user_dict = user.to_dict()
-            user_dict.pop("password", None)  # Removes password if it exists
+            user_dict.pop("password", None)
             users_list.append(user_dict)
         return users_list, 200
 
@@ -87,4 +87,6 @@ class UserByEmail(Resource):
         user = facade.get_user_by_email(email)
         if not user:
             return {"Error": "User not found"}, 404
-        return user.to_dict(), 200
+        user_dict = user.to_dict()
+        user_dict.pop("password", None)
+        return user_dict, 200

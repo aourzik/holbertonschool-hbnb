@@ -8,7 +8,7 @@ class Place(BaseModel):
         title,
         owner,
         description="",
-        price=0,
+        price=1,
         latitude=None,
         longitude=None
     ):
@@ -66,7 +66,7 @@ class Place(BaseModel):
     def price(self, price):
         if not (isinstance(price, (int, float))):
             raise TypeError("The price must be a number")
-        if price < 0:
+        if price <= 0:
             raise ValueError("The price must be positive")
         self._price = price
 
@@ -127,6 +127,17 @@ class Place(BaseModel):
         if amenity in self.amenities:
             self.amenities.remove(amenity)
             self.save()
+
+    def to_dict(self):
+        data = super().to_dict()
+        if 'owner_id' in data:
+            del data['owner_id']
+
+        owner_dict = self.owner.to_dict()
+        owner_dict.pop("password", None)
+        data["owner"] = owner_dict
+
+        return data
 
     def __str__(self):
         """Return a readable string representation of the Place."""
