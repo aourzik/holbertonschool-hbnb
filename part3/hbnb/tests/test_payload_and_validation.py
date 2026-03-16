@@ -8,6 +8,7 @@ class TestPayloadValidation(APITestCase):
         response = self.client.post(
             "/api/v1/users/",
             json={"first_name": "A", "last_name": "B", "email": "a@b.com"},
+            headers=self.auth_header(self.admin_token),
         )
         self.assertEqual(response.status_code, 400)
 
@@ -49,7 +50,11 @@ class TestBoundaryAndTypeValidation(APITestCase):
             "email": f"long_{uuid.uuid4().hex[:8]}@example.com",
             "password": "Secret123!",
         }
-        response = self.client.post("/api/v1/users/", json=payload)
+        response = self.client.post(
+            "/api/v1/users/",
+            json=payload,
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_place_latitude_longitude_boundaries(self):
@@ -130,10 +135,15 @@ class TestBoundaryAndTypeValidation(APITestCase):
                 "email": f"type_{uuid.uuid4().hex[:8]}@example.com",
                 "password": "Secret123!",
             },
+            headers=self.auth_header(self.admin_token),
         )
         self.assertEqual(user_bad_type.status_code, 400)
 
-        amenity_bad_type = self.client.post("/api/v1/amenities/", json={"name": 99})
+        amenity_bad_type = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": 99},
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(amenity_bad_type.status_code, 400)
 
         owner_id, payload = self.create_user("placetype")
