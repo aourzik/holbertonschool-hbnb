@@ -4,7 +4,11 @@ from tests.helpers import APITestCase
 class TestUsers(APITestCase):
     def test_create_user_success(self):
         payload = self.make_user_payload("newuser")
-        response = self.client.post("/api/v1/users/", json=payload)
+        response = self.client.post(
+            "/api/v1/users/",
+            json=payload,
+            headers=self.auth_header(self.admin_token),
+        )
 
         self.assertEqual(response.status_code, 201)
         data = response.get_json()
@@ -13,10 +17,18 @@ class TestUsers(APITestCase):
 
     def test_create_user_duplicate_email_fails(self):
         payload = self.make_user_payload("dup")
-        response1 = self.client.post("/api/v1/users/", json=payload)
+        response1 = self.client.post(
+            "/api/v1/users/",
+            json=payload,
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(response1.status_code, 201)
 
-        response2 = self.client.post("/api/v1/users/", json=payload)
+        response2 = self.client.post(
+            "/api/v1/users/",
+            json=payload,
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(response2.status_code, 400)
 
     def test_get_users_list_excludes_password(self):
