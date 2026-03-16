@@ -11,6 +11,15 @@ class HBnBFacade:
         self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
 
+        admin_user = User(
+                first_name="Admin",
+                last_name="System",
+                email="admin@hbnb.io",
+                is_admin=True
+            )
+        admin_user.hash_password("admin1234")
+        self.user_repo.add(admin_user)
+
 ################ AMENITY #####################
 
     def create_amenity(self, amenity_data):
@@ -45,6 +54,16 @@ class HBnBFacade:
 
         amenity.update(amenity_data)
         return amenity
+
+    def delete_amenity(self, amenity_id):
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            raise ValueError("Amenity not found")
+
+        for place in self.place_repo.get_all():
+            if amenity in place.amenities:
+                place.remove_amenity(amenity)
+        self.amenity_repo.delete(amenity_id)
 
 ################ PLACE ##################### 
 
@@ -103,13 +122,23 @@ class HBnBFacade:
         place.update(place_data)
         return place
 
+    def delete_place(self, place_id):
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found")
+
+        for review in self.review_repo.get_all():
+            if review.place_id == place_id:
+                self.review_repo.delete(review.id)
+                review.place = None
+        self.place_repo.delete(place_id)
+
 ################ USER ##################### 
 
     def create_user(self, user_data):
         user_data = dict(user_data)
         email = user_data.get("email")
         password = user_data.pop("password", None)
-        user_data.pop("is_admin", None)
         if not email:
             raise ValueError("Email is required")
         if password is None:
