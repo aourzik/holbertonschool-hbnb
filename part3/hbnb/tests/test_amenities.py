@@ -3,7 +3,11 @@ from tests.helpers import APITestCase
 
 class TestAmenities(APITestCase):
     def test_create_amenity_success(self):
-        response = self.client.post("/api/v1/amenities/", json={"name": "WiFi"})
+        response = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": "WiFi"},
+            headers=self.auth_header(self.admin_token),
+        )
 
         self.assertEqual(response.status_code, 201)
         amenity = response.get_json()
@@ -11,10 +15,18 @@ class TestAmenities(APITestCase):
         self.assertEqual(amenity["name"], "WiFi")
 
     def test_create_amenity_duplicate_fails(self):
-        first = self.client.post("/api/v1/amenities/", json={"name": "Pool"})
+        first = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": "Pool"},
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(first.status_code, 201)
 
-        second = self.client.post("/api/v1/amenities/", json={"name": "Pool"})
+        second = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": "Pool"},
+            headers=self.auth_header(self.admin_token),
+        )
         self.assertEqual(second.status_code, 400)
 
     def test_get_amenities_list(self):
@@ -42,6 +54,7 @@ class TestAmenities(APITestCase):
         response = self.client.put(
             f"/api/v1/amenities/{amenity['id']}",
             json={"name": "A/C"},
+            headers=self.auth_header(self.admin_token),
         )
 
         self.assertEqual(response.status_code, 200)
@@ -51,6 +64,7 @@ class TestAmenities(APITestCase):
         response = self.client.put(
             "/api/v1/amenities/not-existing-id",
             json={"name": "Test"},
+            headers=self.auth_header(self.admin_token),
         )
 
         self.assertEqual(response.status_code, 404)
