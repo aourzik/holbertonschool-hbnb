@@ -29,6 +29,10 @@ class ReviewList(Resource):
         payload = api.payload
         if not isinstance(payload, dict):
             return {"Error": "Invalid payload"}, 400
+        required_fields = ["text", "rating", "place_id"]
+        missing_fields = [field for field in required_fields if field not in payload]
+        if missing_fields:
+            return {"Error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
         payload["user_id"] = current_user
         place = facade.get_place(payload["place_id"])
         if not place:

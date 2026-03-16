@@ -167,12 +167,17 @@ class HBnBFacade:
         if not user:
             raise ValueError("User not found")
 
+        password = user_data.pop("password", None)
+        user_data.pop("is_admin", None)
+
         if "email" in user_data:
             existing = self.user_repo.get_first_by_attribute("email", user_data["email"])
             if existing and existing.id != user_id:
                 raise ValueError("Email is already used")
 
         user.update(user_data)
+        if password is not None:
+            user.hash_password(password)
         return user
     
     def delete_user(self, user_id):

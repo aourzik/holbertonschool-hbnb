@@ -1,3 +1,4 @@
+from app.services import facade
 from tests.helpers import APITestCase
 
 
@@ -114,3 +115,39 @@ class TestUsers(APITestCase):
         user = response.get_json()
         self.assertEqual(user["first_name"], "Updated")
         self.assertEqual(user["last_name"], "Name")
+
+    def test_admin_update_user_hashes_password(self):
+        user_id, payload = self.create_user("adminreset")
+
+        response = self.client.put(
+            f"/api/v1/users/{user_id}",
+            json={"password": "NewSecret123!"},
+            headers=self.auth_header(self.admin_token),
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        old_login = self.client.post(
+            "/api/v1/auth/login",
+            json={"email": payload["email"], "password": payload["password"]},
+        )
+        self.assertEqual(old_login.status_code, 401)
+
+        new_login = self.client.post(
+            "/api/v1/auth/login",
+            json={"email": payload["email"], "password": "NewSecret123!"},
+        )
+        self.assertEqual(new_login.status_code, 200)
+
+    def test_admin_update_user_cannot_change_is_admin(self):
+        user_id, payload = self.create_user("adminflag")
+
+        response = self.client.put(
+            f"/api/v1/users/{user_id}",
+            json={"is_admin": True, "first_name": "StillUser"},
+            headers=self.auth_header(self.admin_token),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["first_name"], "StillUser")
+        self.assertFalse(facade.get_user(user_id).is_admin)

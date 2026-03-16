@@ -24,7 +24,7 @@ class TestAuth(APITestCase):
         )
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.get_json().get("error"), "Invalid credentials")
+        self.assertEqual(response.get_json().get("Error"), "Invalid credentials")
 
     def test_login_unknown_email_returns_401(self):
         response = self.client.post(
@@ -33,4 +33,4 @@ class TestAuth(APITestCase):
         )
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.get_json().get("error"), "Invalid credentials")
+        self.assertEqual(response.get_json().get("Error"), "Invalid credentials")

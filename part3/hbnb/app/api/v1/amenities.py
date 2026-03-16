@@ -19,7 +19,7 @@ class AmenityList(Resource):
         """Register a new amenity"""
         current_user = get_jwt()
         if not current_user.get('is_admin'):
-            return {'error': 'Admin privileges required'}, 403
+            return {'Error': 'Admin privileges required'}, 403
         try:
             amenity = facade.create_amenity(api.payload)
             return amenity.to_dict(), 201
@@ -53,12 +53,12 @@ class AmenityResource(Resource):
         current_user = get_jwt()
         is_admin = current_user.get('is_admin', False)
         if not is_admin:
-            return {'error': 'Admin privileges required'}, 403
+            return {'Error': 'Admin privileges required'}, 403
         try:
             facade.delete_amenity(amenity_id)
             return {"message": "Amenity deleted successfully"}, 200
         except ValueError as e:
-            return {"error": str(e)}, 404
+            return {"Error": str(e)}, 404
 
     @jwt_required()
     @api.expect(amenity_model)
@@ -69,7 +69,7 @@ class AmenityResource(Resource):
         """Update an amenity's information"""
         current_user = get_jwt()
         if not current_user.get('is_admin'):
-            return {'error': 'Admin privileges required'}, 403
+            return {'Error': 'Admin privileges required'}, 403
         try:
             amenity = facade.update_amenity(amenity_id, api.payload)
             return amenity.to_dict(), 200

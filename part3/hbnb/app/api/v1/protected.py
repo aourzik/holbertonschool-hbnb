@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
 
-api = Namespace('', description='Protected endpoints')
+api = Namespace('protected', description='Protected endpoints')
 
 @api.route('/protected')
 class ProtectedResource(Resource):
@@ -11,10 +11,8 @@ class ProtectedResource(Resource):
         print("jwt------")
         print(get_jwt_identity())
         current_user = get_jwt_identity()
-        print("claims------")
-        print(get_jwt())
-        claims = get_jwt()["is_admin"]
-        if claims:
+        is_admin = get_jwt().get("is_admin", False)
+        if is_admin:
             return {'message': f'Hello, admin {current_user}'}, 200
         else:
             return {'message': f'Hello, user {current_user}'}, 200

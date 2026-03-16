@@ -22,7 +22,7 @@ class UserList(Resource):
         """Register a new user"""
         current_user = get_jwt()
         if not current_user.get('is_admin'):
-            return {'error': 'Admin privileges required'}, 403
+            return {'Error': 'Admin privileges required'}, 403
         try:
             user = facade.create_user(api.payload)
             return {
@@ -68,11 +68,15 @@ class UserResource(Resource):
         current_user_id = get_jwt_identity()
         current_user = get_jwt()
         data = api.payload
-        if not current_user.get('is_admin', False):
+        is_admin = current_user.get('is_admin', False)
+
+        if not is_admin:
             if str(user_id) != str(current_user_id):
-                return {"error": 'Admin privileges required'}, 403
+                return {"Error": 'Admin privileges required'}, 403
             if "email" in data or "password" in data:
                 return {"Error": 'You cannot modify email or password'}, 400
+            if "is_admin" in data:
+                return {"Error": 'You cannot modify admin privileges'}, 403
         try:
             user = facade.update_user(user_id, data).to_dict()
             user.pop("password", None)
@@ -94,12 +98,12 @@ class UserResource(Resource):
         current_user = get_jwt()
         is_admin = current_user.get('is_admin', False)
         if not is_admin and str(user_id) != str(current_user_id):
-            return {"error": 'Unauthorized action'}, 403
+            return {"Error": 'Unauthorized action'}, 403
         try:
             facade.delete_user(user_id)
             return {"message": "User deleted successfully"}, 200
         except ValueError as e:
-            return {"error": str(e)}, 404
+            return {"Error": str(e)}, 404
 
 @api.route('/email/<email>')
 class UserByEmail(Resource):

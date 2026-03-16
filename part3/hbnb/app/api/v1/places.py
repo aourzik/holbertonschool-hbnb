@@ -39,6 +39,10 @@ class PlaceList(Resource):
         payload = api.payload
         if not isinstance(payload, dict):
             return {"Error": "Invalid payload"}, 400
+        required_fields = ["title", "price", "latitude", "longitude", "amenities"]
+        missing_fields = [field for field in required_fields if field not in payload]
+        if missing_fields:
+            return {"Error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
         payload["owner_id"] = current_user_id
         try:
             place = facade.create_place(payload).to_dict()
@@ -77,9 +81,9 @@ class PlaceResource(Resource):
         is_admin = current_user.get('is_admin', False)
         place = facade.get_place(place_id)
         if not place:
-            return {"error": "Place not found"}, 404
+            return {"Error": "Place not found"}, 404
         if not is_admin and str(place.owner.id) != str(current_user_id):
-            return {'error': 'Unauthorized action'}, 403
+            return {"Error": "Unauthorized action"}, 403
         try:
             place = facade.update_place(place_id, api.payload)
             return place.to_dict(), 200
@@ -99,14 +103,14 @@ class PlaceResource(Resource):
         is_admin = current_user.get('is_admin', False)
         place = facade.get_place(place_id)
         if not place:
-            return {"error": "Place not found"}, 404
+            return {"Error": "Place not found"}, 404
         if not is_admin and str(place.owner.id) != str(current_user_id):
-            return {'error': 'Unauthorized action'}, 403
+            return {"Error": "Unauthorized action"}, 403
         try:
             facade.delete_place(place_id)
             return {"message": "Place deleted successfully"}, 200
         except ValueError as e:
-            return {"error": str(e)}, 404
+            return {"Error": str(e)}, 404
 
 @api.route('/<place_id>/reviews')
 class PlaceReviewList(Resource):
