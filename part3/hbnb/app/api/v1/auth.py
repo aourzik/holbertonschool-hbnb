@@ -14,7 +14,7 @@ class Login(Resource):
     @api.expect(login_model)
     def post(self):
         """Authenticate user and return a JWT token"""
-        credentials = api.payload or {}
+        credentials = api.payload
         if not isinstance(credentials, dict):
             return {'error': 'Invalid payload'}, 400
 
