@@ -27,7 +27,7 @@ class ReviewList(Resource):
         """Register a new review"""
         current_user = get_jwt_identity()
         try:
-            payload = api.payload or {}
+            payload = api.payload
             if not isinstance(payload, dict):
                 return {"Error": "Invalid payload"}, 400
 
