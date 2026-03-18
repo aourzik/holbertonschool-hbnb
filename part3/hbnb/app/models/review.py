@@ -1,67 +1,35 @@
 #!/usr/bin/env python3
 from .base_model import BaseModel
+from app import db
 
 
 class Review(BaseModel):
+    __tablename__ = 'reviews'
+
+    text = db.Column(db.String(500), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
     def __init__(self, text, rating, place_id, user_id):
         super().__init__()
-        self.text = text
+
+        if not isinstance(text, str) or not text.strip():
+            raise ValueError("text is required and must be a non-empty string")
+
+        if not isinstance(rating, int):
+            raise TypeError("rating must be an integer")
+        if rating < 1 or rating > 5:
+            raise ValueError("rating must be between 1 and 5")
+
+        if not place_id or not isinstance(place_id, str):
+            raise ValueError("place_id is required")
+
+        if not user_id or not isinstance(user_id, str):
+            raise ValueError("user_id is required")
+
+        self.text = text.strip()
         self.rating = rating
         self.place_id = place_id
         self.user_id = user_id
-
-    @property
-    def text(self):
-        return self._text
-    
-    @property
-    def rating(self):
-        return self._rating
-    
-    @property
-    def place_id(self):
-        return self._place_id
-    
-    @property
-    def user_id(self):
-        return self._user_id
-    
-    @text.setter
-    def text(self, value):
-        if not isinstance(value, str):
-            raise TypeError("Text must be a string")
-        if not value.strip():
-            raise ValueError("Text cannot be empty")
-        self._text = value
-    
-    @rating.setter
-    def rating(self, value):
-        if not isinstance(value, int):
-            raise TypeError("Rating must be an integer")
-        if not (1 <= value <= 5):
-            raise ValueError("Rating must be between 1 and 5")
-        self._rating = value
-    
-    @place_id.setter
-    def place_id(self, value):
-        if not isinstance(value, str):
-            raise TypeError("Place ID must be a string")
-        if not value.strip():
-            raise ValueError("Place ID cannot be empty")
-        self._place_id = value
-    
-    @user_id.setter
-    def user_id(self, value):
-        if not isinstance(value, str):
-            raise TypeError("User ID must be a string")
-        if not value.strip():
-            raise ValueError("User ID cannot be empty")
-        self._user_id = value
-
-    def __str__(self):
-        """Return a readable string representation of the Review."""
-        return f"[Review] ({self.id}) rating={self.rating}"
-
-    def __repr__(self):
-        """Return the official string representation of the Review."""
-        return f"Review(id='{self.id}', rating={self.rating})"

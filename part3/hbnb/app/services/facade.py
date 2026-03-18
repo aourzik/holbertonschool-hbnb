@@ -1,15 +1,18 @@
-from app.persistence.repository import InMemoryRepository
+#!/usr/bin/env python3
+from app.persistence.repository import SQLAlchemyRepository
+from app.services.repositories.user_repository import UserRepository
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.user import User
 from app.models.review import Review
+from app.database import db
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = UserRepository()
+        self.place_repo = SQLAlchemyRepository(Place, db)
+        self.review_repo = SQLAlchemyRepository(Review, db)
+        self.amenity_repo = SQLAlchemyRepository(Amenity, db)
 
         admin_user = User(
                 first_name="Admin",

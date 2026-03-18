@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
 from abc import ABC, abstractmethod
-
+from app import db
 
 class Repository(ABC):
     @abstractmethod
@@ -31,36 +32,39 @@ class Repository(ABC):
         pass
 
 
-class InMemoryRepository(Repository):
-    def __init__(self):
-        self._storage = {}
+class SQLAlchemyRepository(Repository):
+    def __init__(self, model, db):
+        self.model = model
+        self.db = db
 
     def add(self, obj):
-        self._storage[obj.id] = obj
+        self.db.session.add(obj)
+        self.db.session.commit()
 
     def get(self, obj_id):
-        return self._storage.get(obj_id)
+        return self.db.session.get(self.model, obj_id)
 
     def get_all(self):
-        return list(self._storage.values())
+        return self.model.query.all()
 
     def update(self, obj_id, data):
         obj = self.get(obj_id)
         if not obj:
             raise ValueError("Object doesn't exist")
         obj.update(data)
+        self.db.session.commit()
 
     def delete(self, obj_id):
-        if obj_id in self._storage:
-            del self._storage[obj_id]
+        obj = self.get(obj_id)
+        if obj:
+            self.db.session.delete(obj)
+            self.db.session.commit()
 
     def get_all_by_attribute(self, attr_name, attr_value):
         """Always returns a list (empty if no matches)."""
-        return [obj for obj in self._storage.values() if getattr(obj, attr_name, None) == attr_value]
+        return self.model.query.filter_by(**{attr_name: attr_value}).all()
 
     def get_first_by_attribute(self, attr_name, attr_value):
         """Returns the first matched object, or None."""
-        for obj in self._storage.values():
-            if getattr(obj, attr_name, None) == attr_value:
-                return obj
-        return None
+        return self.model.query.filter_by(**{attr_name: attr_value}).first()
+

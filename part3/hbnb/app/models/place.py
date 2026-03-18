@@ -1,148 +1,72 @@
-from .base_model import BaseModel
-from .user import User
+#!/usr/bin/env python3
+from app import db
+from app.models.base_model import BaseModel
+
+place_amenity = db.Table(
+    'place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
 
 
 class Place(BaseModel):
-    def __init__(
-        self,
-        title,
-        owner,
-        description="",
-        price=1,
-        latitude=None,
-        longitude=None
-    ):
+    __tablename__ = 'places'
+
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+    reviews = db.relationship('Review', backref='place', lazy=True, cascade='all, delete-orphan')
+    amenities = db.relationship(
+        'Amenity',
+        secondary=place_amenity,
+        lazy='subquery',
+        backref=db.backref('places', lazy=True)
+    )
+
+    def __init__(self, title, description=None, price=0.0, latitude=0.0,
+                 longitude=0.0, owner_id=None):
         super().__init__()
-        self.title = title
+
+        if not isinstance(title, str) or not title.strip():
+            raise ValueError("title is required and must be a non-empty string")
+        if len(title.strip()) > 100:
+            raise ValueError("title must be 100 characters or less")
+
+        if description is not None and not isinstance(description, str):
+            raise TypeError("description must be a string or None")
+
+        try:
+            price = float(price)
+        except (TypeError, ValueError):
+            raise TypeError("price must be a float")
+        if price <= 0:
+            raise ValueError("price must be a positive value")
+
+        try:
+            latitude = float(latitude)
+        except (TypeError, ValueError):
+            raise TypeError("latitude must be a float")
+        if latitude < -90.0 or latitude > 90.0:
+            raise ValueError("latitude must be between -90 and 90")
+
+        try:
+            longitude = float(longitude)
+        except (TypeError, ValueError):
+            raise TypeError("longitude must be a float")
+        if longitude < -180.0 or longitude > 180.0:
+            raise ValueError("longitude must be between -180 and 180")
+
+        if not owner_id or not isinstance(owner_id, str):
+            raise ValueError("owner_id is required")
+
+        self.title = title.strip()
         self.description = description
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-        self.owner = owner
-        self.reviews = []
-        self.amenities = []
-
-    @property
-    def title(self):
-        return self._title
-
-    @property
-    def description(self):
-        return self._description
-
-    @property
-    def price(self):
-        return self._price
-
-    @property
-    def latitude(self):
-        return self._latitude
-
-    @property
-    def longitude(self):
-        return self._longitude
-
-    @property
-    def owner(self):
-        return self._owner
-
-    @title.setter
-    def title(self, title):
-        if not (isinstance(title, str)):
-            raise TypeError("The title should be a string")
-        if not title.strip():
-            raise ValueError("Title cannot be empty")
-        if len(title) > 100:
-            raise ValueError("The title should have a maximum of 100 characters")
-        self._title = title
-
-    @description.setter
-    def description(self, description):
-        if not isinstance(description, str):
-            raise TypeError("Description must be a string")
-        self._description = description
-
-    @price.setter
-    def price(self, price):
-        if not (isinstance(price, (int, float))):
-            raise TypeError("The price must be a number")
-        if price <= 0:
-            raise ValueError("The price must be positive")
-        self._price = price
-
-    @latitude.setter
-    def latitude(self, latitude):
-        if latitude is not None:
-            if not (isinstance(latitude, (int, float))):
-                raise TypeError("Latitude must be a number")
-            if not (-90 <= latitude <= 90):
-                raise ValueError("Latitude must be between -90 and 90")
-        self._latitude = latitude
-
-    @longitude.setter
-    def longitude(self, longitude):
-        if longitude is not None:
-            if not (isinstance(longitude, (int, float))):
-                raise TypeError("Longitude must be a number")
-            if not (-180 <= longitude <= 180):
-                raise ValueError("Longitude must be between -180 and 180")
-        self._longitude = longitude
-
-    @owner.setter
-    def owner(self, owner):
-        if owner is None:
-            raise ValueError("An owner is required")
-        if not (isinstance(owner, User)):
-            raise TypeError("The owner must be a user")
-        if owner.id is None:
-            raise ValueError("The owner doesn't exist")
-        self._owner = owner
-
-    def add_review(self, review):
-        """Add a review to the place."""
-        from .review import Review
-        if not (isinstance(review, Review)):
-            raise TypeError("review must be a Review")
-        if review not in self.reviews:
-            self.reviews.append(review)
-            self.save()
-
-    def add_amenity(self, amenity):
-        """Add an amenity to the place."""
-        from .amenity import Amenity
-        if not (isinstance(amenity, Amenity)):
-            raise TypeError("amenity must be an Amenity")
-        if amenity not in self.amenities:
-            self.amenities.append(amenity)
-            self.save()
-
-    def remove_review(self, review):
-        """Remove a review from the place."""
-        if review in self.reviews:
-            self.reviews.remove(review)
-            self.save()
-
-    def remove_amenity(self, amenity):
-        """Remove an amenity from the place."""
-        if amenity in self.amenities:
-            self.amenities.remove(amenity)
-            self.save()
-
-    def to_dict(self):
-        data = super().to_dict()
-        if 'owner_id' in data:
-            del data['owner_id']
-
-        owner_dict = self.owner.to_dict()
-        owner_dict.pop("password", None)
-        data["owner"] = owner_dict
-
-        return data
-
-    def __str__(self):
-        """Return a readable string representation of the Place."""
-        return f"[Place] {self.title} ({self.id})"
-
-    def __repr__(self):
-        """Return the official string representation of the Place."""
-        return f"Place(id='{self.id}', title='{self.title}')"
+        self.owner_id = owner_id
