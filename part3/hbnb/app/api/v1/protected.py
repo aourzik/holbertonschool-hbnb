@@ -8,8 +8,6 @@ class ProtectedResource(Resource):
     @jwt_required()
     def get(self):
         """A protected endpoint that requires a valid JWT token"""
-        print("jwt------")
-        print(get_jwt_identity())
         current_user = get_jwt_identity()
         is_admin = get_jwt().get("is_admin", False)
         if is_admin:
