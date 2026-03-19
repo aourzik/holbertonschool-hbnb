@@ -5,7 +5,7 @@ from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.user import User
 from app.models.review import Review
-from app.database import db
+from app import db
 
 class HBnBFacade:
     def __init__(self):
@@ -14,14 +14,21 @@ class HBnBFacade:
         self.review_repo = SQLAlchemyRepository(Review, db)
         self.amenity_repo = SQLAlchemyRepository(Amenity, db)
 
+    def seed_admin(self, email="admin@hbnb.io", password="admin1234"):
+        """Create the default admin user once after the DB is initialized."""
+        admin_user = self.user_repo.get_first_by_attribute("email", email)
+        if admin_user:
+            return admin_user
+
         admin_user = User(
-                first_name="Admin",
-                last_name="System",
-                email="admin@hbnb.io",
-                is_admin=True
-            )
-        admin_user.hash_password("admin1234")
+            first_name="Admin",
+            last_name="System",
+            email=email,
+            is_admin=True
+        )
+        admin_user.hash_password(password)
         self.user_repo.add(admin_user)
+        return admin_user
 
 ################ AMENITY #####################
 
@@ -81,7 +88,7 @@ class HBnBFacade:
         if not owner:
             raise ValueError("Owner not found")
 
-        place = Place(owner=owner, **place_data)
+        place = Place(owner_id=owner_id, **place_data)
 
         for amenity_id in amenities_ids:
             amenity = self.amenity_repo.get(amenity_id)
@@ -178,8 +185,7 @@ class HBnBFacade:
                 raise ValueError("Email is already used")
 
         if password is not None:
-            user.hash_password(password)
-            user_data["password"] = user.password
+            user_data["password"] = password
         self.user_repo.update(user.id, user_data)
         return user
 

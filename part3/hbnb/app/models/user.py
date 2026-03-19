@@ -16,6 +16,39 @@ class User(BaseModel):
     places = db.relationship('Place', backref='owner', lazy=True, cascade='all, delete-orphan')
     reviews = db.relationship('Review', backref='user', lazy=True, cascade='all, delete-orphan')
 
+    def __init__(self, first_name, last_name, email, password=None, is_admin=False, **kwargs):
+        super().__init__(**kwargs)
+
+        if not isinstance(first_name, str) or not first_name.strip():
+            raise ValueError("first_name is required and must be a non-empty string")
+        if len(first_name.strip()) > 50:
+            raise ValueError("first_name must be 50 characters or less")
+
+        if not isinstance(last_name, str) or not last_name.strip():
+            raise ValueError("last_name is required and must be a non-empty string")
+        if len(last_name.strip()) > 50:
+            raise ValueError("last_name must be 50 characters or less")
+
+        if not isinstance(email, str) or not email.strip():
+            raise ValueError("email is required and must be a non-empty string")
+        email = email.strip().lower()
+        email_regex = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+        if not re.match(email_regex, email):
+            raise ValueError("email format is invalid")
+
+        if not isinstance(is_admin, bool):
+            raise TypeError("is_admin must be a boolean")
+
+        self.first_name = first_name.strip()
+        self.last_name = last_name.strip()
+        self.email = email
+        self.is_admin = is_admin
+
+        if password is not None:
+            if not isinstance(password, str) or not password:
+                raise ValueError("password is required")
+            self.password = password
+
     def hash_password(self, password):
         """Hashes the password before storing it."""
         if not isinstance(password, str) or not password:

@@ -11,8 +11,24 @@ class BaseModel(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    def save(self):
+        """Persist the current object and refresh its update timestamp."""
+        self.updated_at = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
+
     def update(self, data):
-        """Update attributes from dictionary"""
+        ignored_keys = ['id', 'created_at', 'updated_at']
         for key, value in data.items():
-            if hasattr(self, key):
+            if key not in ignored_keys and hasattr(self, key) and not callable(getattr(self, key)):
                 setattr(self, key, value)
+        self.save()
+
+    def to_dict(self):
+        result = {
+            column.name: getattr(self, column.name)
+            for column in self.__table__.columns
+        }
+        result["created_at"] = self.created_at.isoformat()
+        result["updated_at"] = self.updated_at.isoformat()
+        return result

@@ -18,3 +18,13 @@ class Amenity(BaseModel):
             raise ValueError("name must be 50 characters or less")
 
         self.name = name
+
+    def update(self, data):
+        if "name" in data:
+            name = data["name"]
+            if not isinstance(name, str) or not name.strip():
+                raise ValueError("name is required and must be a non-empty string")
+            name = name.strip()
+            if len(name) > 50:
+                raise ValueError("name must be 50 characters or less")
+            self.name = name

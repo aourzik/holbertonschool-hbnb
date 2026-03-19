@@ -33,3 +33,18 @@ class Review(BaseModel):
         self.rating = rating
         self.place_id = place_id
         self.user_id = user_id
+
+    def update(self, data):
+        if "text" in data:
+            text = data["text"]
+            if not isinstance(text, str) or not text.strip():
+                raise ValueError("text is required and must be a non-empty string")
+            self.text = text.strip()
+
+        if "rating" in data:
+            rating = data["rating"]
+            if not isinstance(rating, int):
+                raise TypeError("rating must be an integer")
+            if rating < 1 or rating > 5:
+                raise ValueError("rating must be between 1 and 5")
+            self.rating = rating
