@@ -1,8 +1,10 @@
+import os
+import tempfile
 import uuid
 import unittest
 
-from app import create_app
-from app.services import facade
+from app import create_app, db
+from config import Config
 
 
 ADMIN_EMAIL = "admin@hbnb.io"
@@ -11,26 +13,25 @@ ADMIN_PASSWORD = "admin1234"
 
 class APITestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app()
+        fd, self.db_path = tempfile.mkstemp(suffix=".db")
+        os.close(fd)
+
+        class TestConfig(Config):
+            TESTING = True
+            SQLALCHEMY_DATABASE_URI = f"sqlite:///{self.db_path}"
+            SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         self.client = self.app.test_client()
-        self._reset_in_memory_storage()
         self.admin_token = self.login_user(ADMIN_EMAIL, ADMIN_PASSWORD)
 
-    def _reset_in_memory_storage(self):
-        """Keep tests isolated because facade repositories are global singletons."""
-        facade.user_repo._storage.clear()
-        facade.place_repo._storage.clear()
-        facade.review_repo._storage.clear()
-        facade.amenity_repo._storage.clear()
-        facade.create_user(
-            {
-                "first_name": "Admin",
-                "last_name": "System",
-                "email": ADMIN_EMAIL,
-                "password": ADMIN_PASSWORD,
-                "is_admin": True,
-            }
-        )
+    def tearDown(self):
+        db.session.remove()
+        self.app_context.pop()
+        if os.path.exists(self.db_path):
+            os.unlink(self.db_path)
 
     def make_user_payload(self, prefix="user"):
         token = uuid.uuid4().hex[:8]
