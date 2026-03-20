@@ -25,10 +25,10 @@ CREATE TABLE places (
     price DECIMAL(10, 2) NOT NULL,
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
-    owner_id CHAR(36) NOT NULL,
+    user_id CHAR(36) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (owner_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- amenities table

@@ -44,6 +44,5 @@ def create_app(config_class=DevelopmentConfig):
 
     with app.app_context():
         db.create_all()
-        facade.seed_admin()
 
     return app

@@ -44,12 +44,7 @@ class UserList(Resource):
     def get(self):
         """Retrieve a list of all users"""
         all_users = facade.get_all_users()
-        users_list = []
-        for user in all_users:
-            user_dict = user.to_dict()
-            user_dict.pop("password", None)
-            users_list.append(user_dict)
-        return users_list, 200
+        return [user.to_dict() for user in all_users], 200
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -60,9 +55,7 @@ class UserResource(Resource):
         user = facade.get_user(user_id)
         if not user:
             return {"Error": "User not found"}, 404
-        user = user.to_dict()
-        user.pop("password", None)
-        return user, 200
+        return user.to_dict(), 200
 
     @jwt_required()
     @api.expect(user_model)
@@ -84,9 +77,7 @@ class UserResource(Resource):
             if "is_admin" in data:
                 return {"Error": 'You cannot modify admin privileges'}, 403
         try:
-            user = facade.update_user(user_id, data).to_dict()
-            user.pop("password", None)
-            return user, 200
+            return facade.update_user(user_id, data).to_dict(), 200
         except ValueError as e:
             if "not found" in str(e).lower():
                 return {"Error": str(e)}, 404
@@ -120,6 +111,4 @@ class UserByEmail(Resource):
         user = facade.get_user_by_email(email)
         if not user:
             return {"Error": "User not found"}, 404
-        user_dict = user.to_dict()
-        user_dict.pop("password", None)
-        return user_dict, 200
+        return user.to_dict(), 200

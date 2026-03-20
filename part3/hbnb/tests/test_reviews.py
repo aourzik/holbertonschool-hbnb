@@ -3,17 +3,17 @@ from tests.helpers import APITestCase
 
 class TestReviews(APITestCase):
     def _setup_place_and_users(self):
-        owner_id, owner_payload = self.create_user("owner")
-        reviewer_id, reviewer_payload = self.create_user("reviewer")
+        _, owner_payload = self.create_user("owner")
+        _, reviewer_payload = self.create_user("reviewer")
 
         owner_token = self.login_user(owner_payload["email"], owner_payload["password"])
         reviewer_token = self.login_user(reviewer_payload["email"], reviewer_payload["password"])
 
         place = self.create_place(owner_token, title="Review Target")
-        return owner_payload, reviewer_payload, owner_token, reviewer_token, place
+        return owner_token, reviewer_token, place
 
     def test_create_review_success(self):
-        owner_payload, reviewer_payload, owner_token, reviewer_token, place = self._setup_place_and_users()
+        _, reviewer_token, place = self._setup_place_and_users()
 
         response = self.client.post(
             "/api/v1/reviews/",
@@ -32,7 +32,7 @@ class TestReviews(APITestCase):
         self.assertEqual(review["place_id"], place["id"])
 
     def test_create_review_cannot_review_own_place(self):
-        owner_payload, reviewer_payload, owner_token, reviewer_token, place = self._setup_place_and_users()
+        owner_token, _, place = self._setup_place_and_users()
 
         response = self.client.post(
             "/api/v1/reviews/",
@@ -48,7 +48,7 @@ class TestReviews(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_create_review_only_once_per_user_and_place(self):
-        owner_payload, reviewer_payload, owner_token, reviewer_token, place = self._setup_place_and_users()
+        _, reviewer_token, place = self._setup_place_and_users()
 
         first = self.client.post(
             "/api/v1/reviews/",
@@ -75,7 +75,7 @@ class TestReviews(APITestCase):
         self.assertEqual(second.status_code, 400)
 
     def test_create_review_place_not_found(self):
-        owner_id, reviewer_payload = self.create_user("reviewernf")
+        _, reviewer_payload = self.create_user("reviewernf")
         reviewer_token = self.login_user(reviewer_payload["email"], reviewer_payload["password"])
 
         response = self.client.post(
@@ -92,7 +92,7 @@ class TestReviews(APITestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_get_reviews_and_get_review_by_id(self):
-        owner_payload, reviewer_payload, owner_token, reviewer_token, place = self._setup_place_and_users()
+        _, reviewer_token, place = self._setup_place_and_users()
 
         create_resp = self.client.post(
             "/api/v1/reviews/",
@@ -115,8 +115,8 @@ class TestReviews(APITestCase):
         self.assertEqual(get_resp.get_json()["id"], review["id"])
 
     def test_update_review_forbidden_for_other_user(self):
-        owner_payload, reviewer_payload, owner_token, reviewer_token, place = self._setup_place_and_users()
-        intruder_id, intruder_payload = self.create_user("intruder")
+        _, reviewer_token, place = self._setup_place_and_users()
+        _, intruder_payload = self.create_user("intruder")
         intruder_token = self.login_user(intruder_payload["email"], intruder_payload["password"])
 
         create_resp = self.client.post(
@@ -140,7 +140,7 @@ class TestReviews(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_update_and_delete_review_success(self):
-        owner_payload, reviewer_payload, owner_token, reviewer_token, place = self._setup_place_and_users()
+        _, reviewer_token, place = self._setup_place_and_users()
 
         create_resp = self.client.post(
             "/api/v1/reviews/",

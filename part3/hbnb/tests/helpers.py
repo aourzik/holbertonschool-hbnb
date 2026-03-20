@@ -24,6 +24,20 @@ class APITestCase(unittest.TestCase):
         self.app = create_app(TestConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
+        from app.models.user import User
+
+        admin = User.query.filter_by(email=ADMIN_EMAIL).first()
+        if not admin:
+            admin = User(
+                first_name="Admin",
+                last_name="HBnB",
+                email=ADMIN_EMAIL,
+                password=ADMIN_PASSWORD,
+                is_admin=True,
+            )
+            db.session.add(admin)
+            db.session.commit()
+
         self.client = self.app.test_client()
         self.admin_token = self.login_user(ADMIN_EMAIL, ADMIN_PASSWORD)
 

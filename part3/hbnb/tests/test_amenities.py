@@ -29,6 +29,21 @@ class TestAmenities(APITestCase):
         )
         self.assertEqual(second.status_code, 400)
 
+    def test_create_amenity_duplicate_after_trimming_fails(self):
+        first = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": "Pool"},
+            headers=self.auth_header(self.admin_token),
+        )
+        self.assertEqual(first.status_code, 201)
+
+        second = self.client.post(
+            "/api/v1/amenities/",
+            json={"name": "  Pool  "},
+            headers=self.auth_header(self.admin_token),
+        )
+        self.assertEqual(second.status_code, 400)
+
     def test_get_amenities_list(self):
         self.create_amenity("WiFi")
         self.create_amenity("Parking")

@@ -9,4 +9,6 @@ class UserRepository(SQLAlchemyRepository):
         super().__init__(User, db)
 
     def get_user_by_email(self, email):
-        return self.model.query.filter_by(email=email).first()
+        if not isinstance(email, str):
+            return None
+        return self.model.query.filter_by(email=email.strip().lower()).first()

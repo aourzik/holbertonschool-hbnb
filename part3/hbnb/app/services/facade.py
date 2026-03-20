@@ -14,22 +14,6 @@ class HBnBFacade:
         self.review_repo = SQLAlchemyRepository(Review, db)
         self.amenity_repo = SQLAlchemyRepository(Amenity, db)
 
-    def seed_admin(self, email="admin@hbnb.io", password="admin1234"):
-        """Create the default admin user once after the DB is initialized."""
-        admin_user = self.user_repo.get_first_by_attribute("email", email)
-        if admin_user:
-            return admin_user
-
-        admin_user = User(
-            first_name="Admin",
-            last_name="System",
-            email=email,
-            is_admin=True
-        )
-        admin_user.hash_password(password)
-        self.user_repo.add(admin_user)
-        return admin_user
-
 ################ AMENITY #####################
 
     def create_amenity(self, amenity_data):
@@ -37,6 +21,7 @@ class HBnBFacade:
         name = amenity_data.get("name")
         if not name:
             raise ValueError("Name is required")
+        name = Amenity._validate_name(name)
 
         existing = self.amenity_repo.get_first_by_attribute("name", name)
         if existing:
@@ -55,6 +40,7 @@ class HBnBFacade:
     def update_amenity(self, amenity_id, amenity_data):
         amenity_data = dict(amenity_data)
         if "name" in amenity_data:
+            amenity_data["name"] = Amenity._validate_name(amenity_data["name"])
             existing = self.amenity_repo.get_first_by_attribute("name", amenity_data["name"])
             if existing and existing.id != amenity_id:
                 raise ValueError("An amenity with this name already exists")
@@ -79,16 +65,16 @@ class HBnBFacade:
 
     def create_place(self, place_data):
         place_data = dict(place_data)
-        if "owner_id" not in place_data:
+        owner_id = place_data.pop("user_id", place_data.pop("owner_id", None))
+        if owner_id is None:
             raise ValueError("An owner is required")
-        owner_id = place_data.pop("owner_id")
         amenities_ids = place_data.pop("amenities", [])
 
-        owner = self.user_repo.get(owner_id)
-        if not owner:
+        user = self.user_repo.get(owner_id)
+        if not user:
             raise ValueError("Owner not found")
 
-        place = Place(owner_id=owner_id, **place_data)
+        place = Place(user_id=owner_id, **place_data)
 
         for amenity_id in amenities_ids:
             amenity = self.amenity_repo.get(amenity_id)
@@ -112,11 +98,12 @@ class HBnBFacade:
         if not place:
             raise ValueError("Place not found")
 
-        if "owner_id" in place_data:
-            owner = self.user_repo.get(place_data.pop("owner_id"))
-            if not owner:
+        owner_id = place_data.pop("user_id", place_data.pop("owner_id", None))
+        if owner_id is not None:
+            user = self.user_repo.get(owner_id)
+            if not user:
                 raise ValueError("Owner not found")
-            place.owner = owner
+            place.user = user
 
         if "amenities" in place_data:
             amenities_ids = place_data.pop("amenities")
@@ -152,12 +139,11 @@ class HBnBFacade:
             raise ValueError("Email is required")
         if password is None:
             raise ValueError("Password is required")
-        existing = self.user_repo.get_first_by_attribute("email", email)
+        existing = self.user_repo.get_user_by_email(email)
         if existing:
             raise ValueError("Email is already used")
 
-        user = User(**user_data)
-        user.hash_password(password)
+        user = User(password=password, **user_data)
         self.user_repo.add(user)
         return user
 
@@ -168,7 +154,7 @@ class HBnBFacade:
         return self.user_repo.get_all()
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_first_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def update_user(self, user_id, user_data):
         user_data = dict(user_data)
@@ -180,7 +166,7 @@ class HBnBFacade:
         user_data.pop("is_admin", None)
 
         if "email" in user_data:
-            existing = self.user_repo.get_first_by_attribute("email", user_data["email"])
+            existing = self.user_repo.get_user_by_email(user_data["email"])
             if existing and existing.id != user_id:
                 raise ValueError("Email is already used")
 
@@ -202,7 +188,7 @@ class HBnBFacade:
                 self.review_repo.delete(review.id)
 
         for place in self.place_repo.get_all():
-            if place.owner.id == user_id:
+            if place.user_id == user_id:
                 for review in self.review_repo.get_all():
                     if review.place_id == place.id:
                         self.review_repo.delete(review.id)
@@ -228,8 +214,8 @@ class HBnBFacade:
 
         place = self.get_place(place_id)
         review = Review(**review_data)
-        self.review_repo.add(review)
         place.add_review(review)
+        self.review_repo.add(review)
         return review
     
     def get_review(self, review_id):

@@ -13,41 +13,48 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    places = db.relationship('Place', backref='owner', lazy=True, cascade='all, delete-orphan')
-    reviews = db.relationship('Review', backref='user', lazy=True, cascade='all, delete-orphan')
+    places = db.relationship('Place', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    reviews = db.relationship('Review', back_populates='user', lazy=True, cascade='all, delete-orphan')
 
-    def __init__(self, first_name, last_name, email, password=None, is_admin=False, **kwargs):
-        super().__init__(**kwargs)
+    @staticmethod
+    def _validate_name(value, field_name):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"{field_name} is required and must be a non-empty string")
 
-        if not isinstance(first_name, str) or not first_name.strip():
-            raise ValueError("first_name is required and must be a non-empty string")
-        if len(first_name.strip()) > 50:
-            raise ValueError("first_name must be 50 characters or less")
+        value = value.strip()
+        if len(value) > 50:
+            raise ValueError(f"{field_name} must be 50 characters or less")
+        return value
 
-        if not isinstance(last_name, str) or not last_name.strip():
-            raise ValueError("last_name is required and must be a non-empty string")
-        if len(last_name.strip()) > 50:
-            raise ValueError("last_name must be 50 characters or less")
-
+    @staticmethod
+    def _validate_email(email):
         if not isinstance(email, str) or not email.strip():
             raise ValueError("email is required and must be a non-empty string")
+
         email = email.strip().lower()
         email_regex = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
         if not re.match(email_regex, email):
             raise ValueError("email format is invalid")
+        return email
 
+    @staticmethod
+    def _validate_is_admin(is_admin):
         if not isinstance(is_admin, bool):
             raise TypeError("is_admin must be a boolean")
+        return is_admin
 
-        self.first_name = first_name.strip()
-        self.last_name = last_name.strip()
-        self.email = email
-        self.is_admin = is_admin
+    def __init__(self, first_name, last_name, email, password=None, is_admin=False, **kwargs):
+        super().__init__(**kwargs)
+
+        self.first_name = self._validate_name(first_name, "first_name")
+        self.last_name = self._validate_name(last_name, "last_name")
+        self.email = self._validate_email(email)
+        self.is_admin = self._validate_is_admin(is_admin)
 
         if password is not None:
             if not isinstance(password, str) or not password:
                 raise ValueError("password is required")
-            self.password = password
+            self.hash_password(password)
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
@@ -59,36 +66,23 @@ class User(BaseModel):
         """Verifies if the provided password matches the hashed password."""
         return bcrypt.check_password_hash(self.password, password)
 
+    def to_dict(self):
+        """Serialize the user without exposing the password hash."""
+        data = super().to_dict()
+        data.pop("password", None)
+        return data
+
     def update(self, data):
         """Update user fields with validation and secure password hashing."""
 
         if "first_name" in data:
-            first_name = data["first_name"]
-            if not isinstance(first_name, str) or not first_name.strip():
-                raise ValueError("first_name is required and must be a non-empty string")
-            if len(first_name.strip()) > 50:
-                raise ValueError("first_name must be 50 characters or less")
-            self.first_name = first_name.strip()
+            self.first_name = self._validate_name(data["first_name"], "first_name")
 
         if "last_name" in data:
-            last_name = data["last_name"]
-            if not isinstance(last_name, str) or not last_name.strip():
-                raise ValueError("last_name is required and must be a non-empty string")
-            if len(last_name.strip()) > 50:
-                raise ValueError("last_name must be 50 characters or less")
-            self.last_name = last_name.strip()
+            self.last_name = self._validate_name(data["last_name"], "last_name")
 
         if "email" in data:
-            email = data["email"]
-            if not isinstance(email, str) or not email.strip():
-                raise ValueError("email is required and must be a non-empty string")
-
-            email = email.strip().lower()
-            email_regex = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
-            if not re.match(email_regex, email):
-                raise ValueError("email format is invalid")
-
-            self.email = email
+            self.email = self._validate_email(data["email"])
 
         if "password" in data:
             password = data["password"]
@@ -97,7 +91,4 @@ class User(BaseModel):
             self.hash_password(password)
 
         if "is_admin" in data:
-            is_admin = data["is_admin"]
-            if not isinstance(is_admin, bool):
-                raise TypeError("is_admin must be a boolean")
-            self.is_admin = is_admin
+            self.is_admin = self._validate_is_admin(data["is_admin"])

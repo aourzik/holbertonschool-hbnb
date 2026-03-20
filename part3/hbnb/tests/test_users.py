@@ -66,6 +66,17 @@ class TestUsers(APITestCase):
         self.assertEqual(user["email"], payload["email"])
         self.assertNotIn("password", user)
 
+    def test_login_normalizes_email_input(self):
+        user_id, payload = self.create_user("mixedcase")
+
+        response = self.client.post(
+            "/api/v1/auth/login",
+            json={"email": f"  {payload['email'].upper()}  ", "password": payload["password"]},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("access_token", response.get_json())
+
     def test_update_user_requires_jwt(self):
         user_id, payload = self.create_user("needjwt")
 
