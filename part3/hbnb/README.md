@@ -108,6 +108,52 @@ Default development behavior:
   - Many-to-many between places and amenities
 - Validation rules are enforced inside the model layer
 
+```mermaid
+---
+config:
+  look: classic
+  theme: dark
+---
+erDiagram
+    USER ||--o{ PLACE : owns
+    USER ||--o{ REVIEW : writes
+    PLACE ||--o{ Place_Amenity : has
+    AMENITY ||--o{ Place_Amenity: includes
+    PLACE ||--o{ REVIEW : assigned
+USER {
+        string id
+        string first_name
+        string last_name
+        string email
+        string password
+        bool is_admin
+    }
+PLACE {
+        string id
+        string title
+        string description
+        double price
+        double latitude
+        double longitude
+        string owner_id FK 
+    }
+REVIEW {
+        string id
+        string text
+        int rating
+        string user_id FK
+        string place_id FK
+    }
+AMENITY {
+        string id
+        string name
+    }
+Place_Amenity {
+        string place_id FK
+        string amenity_id FK
+    }
+```
+
 ---
 
 ### 2. 👤 User Endpoints
