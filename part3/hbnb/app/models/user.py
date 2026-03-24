@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import re
 from app import db, bcrypt
-from .base_model import BaseModel
+from .base_model import BaseModel, current_time
 
 
 class User(BaseModel):
@@ -92,3 +92,4 @@ class User(BaseModel):
 
         if "is_admin" in data:
             self.is_admin = self._validate_is_admin(data["is_admin"])
+        self.updated_at = current_time()
