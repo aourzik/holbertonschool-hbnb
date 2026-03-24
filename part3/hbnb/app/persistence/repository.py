@@ -33,9 +33,9 @@ class Repository(ABC):
 
 
 class SQLAlchemyRepository(Repository):
-    def __init__(self, model, db):
+    def __init__(self, model, db_instance=None):
         self.model = model
-        self.db = db
+        self.db = db_instance or db
 
     def add(self, obj):
         self.db.session.add(obj)
@@ -67,4 +67,3 @@ class SQLAlchemyRepository(Repository):
     def get_first_by_attribute(self, attr_name, attr_value):
         """Returns the first matched object, or None."""
         return self.model.query.filter_by(**{attr_name: attr_value}).first()
-
