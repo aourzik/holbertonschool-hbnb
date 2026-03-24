@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 from app import db
@@ -7,7 +7,7 @@ from app import db
 
 def current_time():
     """Return a timezone-aware UTC timestamp."""
-    return datetime.utcnow()
+    return datetime.now(timezone.utc)
 
 
 class BaseModel(db.Model):
