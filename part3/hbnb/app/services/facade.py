@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-from app.persistence.repository import SQLAlchemyRepository
-from app.services.repositories.user_repository import UserRepository
+from app.services.repositories import (
+    UserRepository,
+    PlaceRepository,
+    ReviewRepository,
+    AmenityRepository,
+)
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.user import User
 from app.models.review import Review
-from app import db
 
 class HBnBFacade:
     def __init__(self):
         self.user_repo = UserRepository()
-        self.place_repo = SQLAlchemyRepository(Place, db)
-        self.review_repo = SQLAlchemyRepository(Review, db)
-        self.amenity_repo = SQLAlchemyRepository(Amenity, db)
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
+        self.amenity_repo = AmenityRepository()
 
 ################ AMENITY #####################
 
@@ -106,14 +109,15 @@ class HBnBFacade:
             place.user = user
 
         if "amenities" in place_data:
+            amenity_list = []
             amenities_ids = place_data.pop("amenities")
             for amenity_id in amenities_ids:
                 amenity = self.amenity_repo.get(amenity_id)
                 if not amenity:
                     raise ValueError("Amenity not found")
+                amenity_list.append(amenity)
             place.amenities.clear()
-            for amenity_id in amenities_ids:
-                amenity = self.amenity_repo.get(amenity_id)
+            for amenity in amenity_list:
                 place.add_amenity(amenity)
 
         self.place_repo.update(place.id, place_data)
@@ -124,9 +128,8 @@ class HBnBFacade:
         if not place:
             raise ValueError("Place not found")
 
-        for review in self.review_repo.get_all():
-            if review.place_id == place_id:
-                self.review_repo.delete(review.id)
+        for review in self.get_review_by_place(place_id):
+            self.delete_review(review.id)
         self.place_repo.delete(place_id)
 
 ################ USER ##################### 
@@ -180,19 +183,16 @@ class HBnBFacade:
         if not user:
             raise ValueError("User not found")
 
-        for review in self.review_repo.get_all():
+        for review in self.review_repo.get_all_by_attribute("user_id", user_id):
             if review.user_id == user_id:
                 place = self.place_repo.get(review.place_id)
                 if place and review in place.reviews:
                     place.remove_review(review)
                 self.review_repo.delete(review.id)
 
-        for place in self.place_repo.get_all():
+        for place in self.place_repo.get_all_by_attribute("user_id", user_id):
             if place.user_id == user_id:
-                for review in self.review_repo.get_all():
-                    if review.place_id == place.id:
-                        self.review_repo.delete(review.id)
-                self.place_repo.delete(place.id)
+                self.delete_place(place.id)
 
         self.user_repo.delete(user_id)
 
@@ -246,5 +246,5 @@ class HBnBFacade:
         place = self.place_repo.get(review.place_id)
         if place and review in place.reviews:
             place.remove_review(review)
-            
+
         self.review_repo.delete(review_id)
