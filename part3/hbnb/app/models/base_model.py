@@ -23,8 +23,6 @@ class BaseModel(db.Model):
         if self.created_at is None:
             self.created_at = current_time()
         self.updated_at = current_time()
-        db.session.add(self)
-        db.session.commit()
 
     def update(self, data):
         """Update the current object with the provided data dictionary."""
