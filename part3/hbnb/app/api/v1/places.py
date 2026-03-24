@@ -26,6 +26,16 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
+update_place_model = api.model('UpdatePlace', {
+    'title': fields.String(description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(description='Price per night'),
+    'latitude': fields.Float(description='Latitude of the place'),
+    'longitude': fields.Float(description='Longitude of the place'),
+    'amenities': fields.List(fields.String, description="List of amenities ID's")
+})
+
+
 
 @api.route('/')
 class PlaceList(Resource):
@@ -69,7 +79,7 @@ class PlaceResource(Resource):
         return place.to_dict(), 200
 
     @jwt_required()
-    @api.expect(place_model)
+    @api.expect(update_place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(403, 'Unauthorized action')
     @api.response(404, 'Place not found')
