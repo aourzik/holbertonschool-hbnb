@@ -1,5 +1,5 @@
 from app import db
-from .base_model import BaseModel
+from .base_model import BaseModel, current_time
 from .place import place_amenity
 
 
@@ -31,3 +31,4 @@ class Amenity(BaseModel):
     def update(self, data):
         if "name" in data:
             self.name = self._validate_name(data["name"])
+        self.updated_at = current_time()
