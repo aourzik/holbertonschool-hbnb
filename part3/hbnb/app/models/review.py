@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from .base_model import BaseModel
+from .base_model import BaseModel, current_time
 from app import db
 
 
@@ -47,3 +47,4 @@ class Review(BaseModel):
 
         if "rating" in data:
             self.rating = self._validate_rating(data["rating"])
+        self.updated_at = current_time()
