@@ -12,6 +12,12 @@ user_model = api.model('User', {
     'password': fields.String(required=True, description='Password of the user')
 })
 
+update_user_model = api.model('UpdateUser', {
+    'first_name': fields.String(description='First name of the user'),
+    'last_name': fields.String(description='Last name of the user'),
+    'email': fields.String(description='Email of the user'),
+    'password': fields.String(description='Password of the user')
+})
 @api.route('/')
 class UserList(Resource):
     @jwt_required()
