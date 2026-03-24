@@ -114,6 +114,8 @@ class Place(BaseModel):
         if "longitude" in data:
             self.longitude = self._validate_coordinate(data["longitude"], "longitude", -180.0, 180.0)
 
+        self.updated_at = current_time()
+
     def add_review(self, review):
         """Add a review to the place."""
         from .review import Review
