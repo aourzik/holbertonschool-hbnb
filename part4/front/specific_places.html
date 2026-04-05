@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Residences - Duchess & Duke</title>
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <a href="#home" class="logo-link">
+                <div class="logo">
+                    <img src="images/logo.png" alt="Duchess & Duke Icon" class="logo-icon">
+
+                    <span class="logo-text" link="#home">
+                        <span class="brand-name">Duchess & Duke</span>
+                        <span class="brand-sub">Housing</span>
+                    </span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="places.html">Places</a></li>
+                <li><a href="index.html#main-footer">Contact us</a></li>
+                <li><a href="connect.html" class="btn-connect">Connect</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="specific-place">
+            <div class="place-header">
+                <h2>The Featherington Estate</h2>
+            </div>
+
+            <div class="carousel-wrapper">
+                <div class="carousel">
+                    <img src="estate-1.jpg" alt="Room view 1">
+                </div>
+            </div>
+
+            <div class="place-bottom-container">
+                <div class="description-column">
+                    <div class="description-card">
+                        <h3>Estate and Gardens, Bath</h3>
+                        <h5>6 guests · 3 bedrooms · 2 bathrooms</h5>
+
+                        <div class="rating-summary">
+                            <span class="star-icon">★</span>
+                            <span class="rating-score">4.98</span>
+                            <span class="comment-count">(124 comments)</span>
+                        </div>
+
+                        <h6>Hosted by Lady Danbury</h6>
+                        <p class="full-description">
+                            Experience the height of Regency elegance. This estate offers sprawling gardens,
+                            hand-painted frescoes, and a ballroom fit for a Queen's favorite.
+                        </p>
+                    </div>
+
+                    <div class="ratings-section">
+                        <h1>Rating & Comments</h1>
+                        <div class="rate-cards-grid">
+                            <div class="rate-card">
+                                <div class="user-meta">
+                                    <img src="avatar-user.jpg" alt="User Avatar" class="avatar">
+                                    <div class="user-info">
+                                        <h6>Daphne B.</h6>
+                                        <p>Clyvedon, UK</p>
+                                    </div>
+                                </div>
+                                <p class="comment-text">Absolutely flawless. The attention to detail is remarkable.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="reservation-column">
+                    <div class="reservation-card sticky-sidebar">
+                        <form action="#" method="POST" class="reservation-form">
+                            <div class="form-group">
+                                <label for="checkin">Check-in</label>
+                                <input type="date" id="checkin" name="checkin">
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout">Check-out</label>
+                                <input type="date" id="checkout" name="checkout">
+                            </div>
+                            <div class="form-group">
+                                <label for="guests">Guests</label>
+                                <select id="guests" name="guests">
+                                    <option value="1">1 Guest</option>
+                                    <option value="2">2 Guests</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-reserve">Reserve Your Stay</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </section>

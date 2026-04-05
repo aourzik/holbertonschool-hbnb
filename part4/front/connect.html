@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Residences - Duchess & Duke</title>
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header class="main-header">
+        <nav class="navbar">
+            <a href="#home" class="logo-link">
+                <div class="logo">
+                    <img src="images/logo.png" alt="Duchess & Duke Icon" class="logo-icon">
+
+                    <span class="logo-text" link="#home">
+                        <span class="brand-name">Duchess & Duke</span>
+                        <span class="brand-sub">Housing</span>
+                    </span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="places.html">Places</a></li>
+                <li><a href="index.html#main-footer">Contact us</a></li>
+                <li><a href="connect.html" class="btn-connect">Connect</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="connect-page-container">
+            <div class="auth-card">
+                <h2>Join the Society</h2>
+                <p class="subtitle">Step into the world of Victorian luxury.</p>
+
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="your.name@society.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="role-selection">
+                        <p>I am joining as:</p>
+                        <div class="radio-group">
+                            <input type="radio" id="guest" name="user_role" value="guest" checked>
+                            <label for="guest">A Guest (Searching for a stay)</label>
+                        </div>
+                        <div class="radio-group">
+                            <input type="radio" id="host" name="user_role" value="host">
+                            <label for="host">A Host (Listing my estate)</label>
+                        </div>
+                        <div class="radio-group">
+                            <input type="radio" id="admin" name="user_role" value="admin">
+                            <label for="admin">The Crown (Admin)</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Step Into the Ballroom</button>
+                    <p class="form-footer">Not a member yet? <a href="#">Register here</a></p>
+                </form>
+            </div>
+        </section>
+    </main>
