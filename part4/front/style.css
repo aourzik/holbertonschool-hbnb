@@ -30,7 +30,6 @@ h2,
 h3,
 .whistledown-quote {
     font-family: 'Playfair Display', serif;
-    /* Serif uniquement pour l'apparat */
     font-weight: 700;
     color: var(--dark-text);
 }
@@ -49,6 +48,29 @@ h3,
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* --- LE CONTENEUR DU LOGO --- */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: auto;
+    overflow: hidden;
+}
+
+/* --- L'IMAGE DU LOGO --- */
+.logo img {
+    width: 70%;
+    height: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 8px rgba(184, 157, 94, 0.4));
 }
 
 .nav-links {
@@ -79,8 +101,7 @@ h3,
 
 /* --- HERO SECTION --- */
 .hero {
-    height: 100vh;
-    /* Toute la hauteur de l'écran pour l'intro */
+    height: 91vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -88,7 +109,6 @@ h3,
     overflow: hidden;
     color: white;
     background-color: var(--dark-text);
-    /* Fond sombre pendant le chargement */
 }
 
 /* 1. Animation de la Vidéo (Dévoilement + Dé-zoom) */
