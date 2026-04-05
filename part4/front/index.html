@@ -12,15 +12,22 @@
 
     <header class="main-header">
         <nav class="navbar">
-            <div class="logo">
-                <img src="images/logo.png" alt="Duchess and Duke Housing Logo">
-            </div>
+            <a href="#home" class="logo-link">
+                <div class="logo">
+                    <img src="images/logo.png" alt="Duchess & Duke Icon" class="logo-icon">
+
+                    <span class="logo-text" link="#home">
+                        <span class="brand-name">Duchess & Duke</span>
+                        <span class="brand-sub">Housing</span>
+                    </span>
+                </div>
+            </a>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#places">Places</a></li>
+                <li><a href="places.html">Places</a></li>
                 <li><a href="#contact">Contact us</a></li>
-                <li><a href="#connect" class="btn-connect">Connect</a></li>
+                <li><a href="connect.html" class="btn-connect">Connect</a></li>
             </ul>
         </nav>
     </header>
@@ -49,41 +56,67 @@
             </div>
         </section>
 
-        <section class="values-section">
+        <section id="values" class="values-section">
             <div class="container">
-                <h1>Our values</h1>
-                <h4>Ensuring your comfort, giving you the feeling of being a Bridgerton in Victorian London</h4>
-                <div class="quote-block">
-                    <img src="diamond-icon.png" alt="Diamond symbol" class="value-img">
-                    <blockquote class="whistledown-quote">
-                        <p>“Formed under pressure, desired by many, but possessed only by a few lucky ones, nothing on
-                            earth is as envied as a diamond.”</p>
-                        <cite>— Lady Whistledown</cite>
-                    </blockquote>
+                <h1 class="reveal title-luxury">Our Values</h1>
+
+                <p class="reveal value-description">
+                    Ensuring your comfort, giving you the feeling of being a Bridgerton in Victorian London.
+                </p>
+
+                <div class="reveal separator-container">
+                    <div class="separator-line"></div>
+                    <div class="image-wrapper">
+                        <img src="images/lady.png" alt="Lady Whistledown">
+                    </div>
                 </div>
+
+                <blockquote class="reveal whistledown-quote">
+                    <p>“Formed under pressure, desired by many, but possessed only by a few lucky ones, nothing on earth
+                        is as envied as a diamond.”</p>
+                    <cite>— Lady Whistledown</cite>
+                </blockquote>
             </div>
         </section>
 
         <section id="about" class="about-section">
             <div class="container">
-                <h1>About us</h1>
-                <p class="about-description">
+                <h1 class="reveal title-luxury">About Us</h1>
+                <p class="reveal value-description">
                     In the real estate industry for years, our taste for luxury and perfection combined with our passion
                     for the Bridgerton series has naturally led us to offer you the most luxurious and unusual places in
-                    London, for a few nights…
+                    London.
                 </p>
-                <div class="about-cards-grid">
-                    <div class="about-card">
-                        <img src="excellence.jpg" alt="Excellence">
-                        <p>Excellence in every detail of your stay.</p>
+
+                <div class="about-grid">
+                    <div class="reveal about-card">
+                        <div class="card-image-container">
+                            <img src="images/history.jpg" alt="Heritage London">
+                        </div>
+                        <div class="card-content">
+                            <h3>Architectural Heritage</h3>
+                            <p>We select properties that capture the essence of 19th-century grandeur.</p>
+                        </div>
                     </div>
-                    <div class="about-card">
-                        <img src="history.jpg" alt="History">
-                        <p>A deep respect for Victorian architectural heritage.</p>
+
+                    <div class="reveal about-card">
+                        <div class="card-image-container">
+                            <img src="images/curation.jpg" alt="Luxury Interior">
+                        </div>
+                        <div class="card-content">
+                            <h3>Modern Comfort</h3>
+                            <p>Victorian aesthetics meet 21st-century amenities for a seamless stay.</p>
+                        </div>
                     </div>
-                    <div class="about-card">
-                        <img src="curation.jpg" alt="Curation">
-                        <p>Curated selections for the most discerning guests.</p>
+
+                    <div class="reveal about-card">
+                        <div class="card-image-container">
+                            <img src="images/excellence.jpg" alt="Butler Service">
+                        </div>
+                        <div class="card-content">
+                            <h3>Royal Service</h3>
+                            <p>Every guest is treated with the protocols of the highest nobility.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -220,6 +253,9 @@
     <footer class="main-footer">
         <div class="footer-container">
             <div class="footer-brand">
+                <div class="footer-logo-icon">
+                    <img src="images/logo.png" alt="Duchess & Duke Icon">
+                </div>
                 <h3>Duchess & Duke</h3>
                 <p>Establishing the standards of luxury since 1880.</p>
             </div>
@@ -244,7 +280,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2024 Duchess and Duke Housing. All rights reserved. A Whistledown Media Production.</p>
+                <p>&copy; 2026 Duchess and Duke Housing. All rights reserved. An Aïny Ourzik Production.</p>
             </div>
         </div>
     </footer>
@@ -286,5 +322,17 @@
     </div>
 
 </body>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+</script>
 
 </html>

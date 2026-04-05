@@ -18,7 +18,6 @@
 
 body {
     font-family: 'Montserrat', sans-serif;
-    /* Sans-serif pour tout le corps */
     background-color: var(--silk-white);
     color: var(--dark-text);
     line-height: 1.6;
@@ -50,27 +49,60 @@ h3,
     align-items: center;
 }
 
-/* --- LE CONTENEUR DU LOGO --- */
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: auto;
-    overflow: hidden;
-}
-
-/* --- L'IMAGE DU LOGO --- */
-.logo img {
-    width: 70%;
-    height: auto;
-    object-fit: contain;
+/* --- LE LIEN GLOBAL DU LOGO (POUR LE CLIC) --- */
+.logo-link {
+    text-decoration: none;
+    display: block;
     transition: var(--transition);
 }
 
-.logo img:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 8px rgba(184, 157, 94, 0.4));
+.logo-link:hover {
+    transform: translateY(-1px);
+}
+
+/* --- LE CONTENEUR DU LOGO (FLEXBOX POUR L'ALIGNEMENT) --- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --- L'ICÔNE DE L'ABEILLE --- */
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* --- LE CONTENEUR DE TEXTE DU LOGO --- */
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- LE NOM PRINCIPAL (DUCHESS & DUKE) --- */
+.brand-name {
+    font-family: 'Playfair Display', serif;
+    /* La police luxueuse */
+    font-weight: 700;
+    font-size: 1.1rem;
+    /* Taille lisible mais fine */
+    color: var(--dark-text);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+/* --- LE SOUS-TITRE (HOUSING) --- */
+.brand-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--regency-gold);
+    letter-spacing: 3px;
+    margin-top: -2px;
 }
 
 .nav-links {
@@ -117,21 +149,14 @@ h3,
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1.2);
-    /* Commence zoomée */
     min-width: 100%;
     min-height: 100%;
     width: auto;
     height: auto;
     z-index: 1;
-    /* Derrière le texte */
     object-fit: cover;
     filter: brightness(0.6);
-    /* Ambiance sombre pour le texte */
-
     opacity: 0;
-    /* Invisible au début */
-
-    /* Déclenchement de l'animation de la vidéo */
     animation: revealVideo 1.8s ease-out forwards;
 }
 
@@ -149,13 +174,8 @@ h3,
     color: white;
     margin-bottom: 0.5rem;
     text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
-
     opacity: 0;
-    /* Invisible au début */
     transform: scale(0.8);
-    /* Commence petit */
-
-    /* Déclenchement de l'animation du titre (avec un délai) */
     animation: zoomInText 1s ease-out 1.2s forwards;
 }
 
@@ -163,15 +183,10 @@ h3,
 .hero-content h3 {
     font-size: 1.5rem;
     color: var(--romantic-rose);
-    /* Petite touche de rose */
     font-family: 'Montserrat', sans-serif;
-    /* Plus moderne */
     font-weight: 300;
     letter-spacing: 3px;
-
     opacity: 0;
-
-    /* Déclenchement (encore plus de délai) */
     animation: fadeInSimple 1s ease-out 2s forwards;
 }
 
@@ -184,7 +199,6 @@ h3,
     to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
-        /* Revient à la taille normale */
     }
 }
 
@@ -193,7 +207,6 @@ h3,
     to {
         opacity: 1;
         transform: scale(1);
-        /* Taille normale */
     }
 }
 
@@ -209,7 +222,6 @@ h3,
 .scroll-indicator {
     position: absolute;
     bottom: 30px;
-    /* Aligné en bas de la section hero */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -218,9 +230,7 @@ h3,
     gap: 10px;
     z-index: 20;
     opacity: 0;
-    /* Caché au début pour l'animation */
     animation: fadeInSimple 1s ease-out 3s forwards;
-    /* Apparaît en tout dernier */
 }
 
 .scroll-indicator span {
@@ -298,6 +308,202 @@ h3,
     }
 }
 
+/* --- SECTION OUR VALUES--- */
+.values-section {
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 10%;
+    background-color: var(--silk-white);
+    text-align: center;
+    overflow: hidden;
+}
+
+.values-section .container {
+    max-width: 1400px;
+    width: 100%;
+}
+
+.title-luxury {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    text-shadow: 2px 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.value-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 3.5rem;
+    color: var(--dark-text);
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- LE SÉPARATEUR (TRAIT + IMAGE RONDE) --- */
+.separator-container {
+    position: relative;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
+
+/* Le trait léger en background */
+.separator-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--bridgerton-blue), transparent);
+    position: absolute;
+    z-index: 1;
+}
+
+/* LE CONTENEUR DE L'IMAGE (LE CERCLE) */
+.image-wrapper {
+    width: 80px;
+    height: 80px;
+
+    background-color: var(--silk-white);
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 2;
+    border: 1px solid rgba(184, 157, 94, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+    padding: 5px;
+    overflow: hidden;
+}
+
+/* L'IMAGE À L'INTÉRIEUR DU CERCLE */
+.value-image-round {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Citation Whistledown */
+.whistledown-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: var(--dark-text);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.whistledown-quote cite {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--regency-gold);
+}
+
+/* ========================================== */
+/* --- SYSTÈME DE REVEAL --- */
+/* ========================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- SECTION ABOUT US (50% de l'écran) --- */
+/* --- SÉPARATION AVEC LA SECTION PRÉCÉDENTE --- */
+.about-section {
+    position: relative;
+    min-height: 60vh;
+    padding: 8rem 5%;
+    background-color: var(--silk-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Le trait de séparation "Before" */
+.about-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--regency-gold), transparent);
+    opacity: 0.4;
+}
+
+/* --- CONTENEUR ÉLARGI --- */
+.about-section .container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* --- TITRE ET DESCRIPTION CENTRÉS --- */
+.about-section .title-luxury {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
+
+.about-section .value-description {
+    max-width: 800px;
+    margin: 0 auto 4rem auto;
+}
+
+/* --- GRILLE DES CARTES  --- */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    width: 100%;
+}
+
+/* STYLE DES CARTES */
+.about-card {
+    background-color: rgba(244, 215, 212, 0.4);
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid rgba(162, 190, 209, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.about-card:hover {
+    background-color: rgba(244, 215, 212, 0.7);
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(162, 190, 209, 0.25);
+}
+
+.card-image-container {
+    width: 100%;
+    height: 250px;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
 /* --- SECTIONS GLOBALES --- */
 section {
     padding: 5rem 10%;
@@ -317,9 +523,9 @@ section {
     margin-top: 3rem;
 }
 
-.about-card,
+
 .house-card {
-    background: white;
+    background: rgba(162, 190, 209, 0.25);
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid var(--romantic-rose);
@@ -327,7 +533,7 @@ section {
     text-align: center;
 }
 
-.about-card:hover,
+
 .house-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(162, 190, 209, 0.2);
@@ -428,4 +634,39 @@ select {
 
 .footer-links a:hover {
     opacity: 1;
+}
+
+/* --- STYLE DU LOGO DANS LE FOOTER --- */
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer-logo-icon {
+    width: 200px;
+    height: auto;
+}
+
+.footer-logo-icon img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.footer-brand h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--regency-gold);
+    margin-bottom: 0.8rem;
+    line-height: 1;
+}
+
+/* Alignement du bloc */
+@media (max-width: 768px) {
+    .footer-brand {
+        align-items: center;
+        text-align: center;
+    }
 }
