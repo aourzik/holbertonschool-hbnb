@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duchess and Duke Housing | Victorian Luxury</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="logo">
+                <img src="logo.png" alt="Duchess and Duke Housing Logo">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#places">Places</a></li>
+                <li><a href="#contact">Contact us</a></li>
+                <li><a href="#connect" class="btn-connect">Connect</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="video-container">
+                <video autoplay muted loop playsinline id="hero-video">
+                    <source src="background-london.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="hero-content">
+                <h1>Duchess and Duke Housing</h1>
+                <h3>Since 1880</h3>
+            </div>
+        </section>
+
+        <section class="values-section">
+            <div class="container">
+                <h1>Our values</h1>
+                <h4>Ensuring your comfort, giving you the feeling of being a Bridgerton in Victorian London</h4>
+                <div class="quote-block">
+                    <img src="diamond-icon.png" alt="Diamond symbol" class="value-img">
+                    <blockquote class="whistledown-quote">
+                        <p>“Formed under pressure, desired by many, but possessed only by a few lucky ones, nothing on
+                            earth is as envied as a diamond.”</p>
+                        <cite>— Lady Whistledown</cite>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h1>About us</h1>
+                <p class="about-description">
+                    In the real estate industry for years, our taste for luxury and perfection combined with our passion
+                    for the Bridgerton series has naturally led us to offer you the most luxurious and unusual places in
+                    London, for a few nights…
+                </p>
+                <div class="about-cards-grid">
+                    <div class="about-card">
+                        <img src="excellence.jpg" alt="Excellence">
+                        <p>Excellence in every detail of your stay.</p>
+                    </div>
+                    <div class="about-card">
+                        <img src="history.jpg" alt="History">
+                        <p>A deep respect for Victorian architectural heritage.</p>
+                    </div>
+                    <div class="about-card">
+                        <img src="curation.jpg" alt="Curation">
+                        <p>Curated selections for the most discerning guests.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="places" class="places-section">
+            <div class="container">
+                <h2><span id="housing-count">12</span> available housing units</h2>
+
+                <div class="places-layout">
+                    <div class="map-container">
+                        <div id="map-display">
+                            <img src="map-london-vintage.jpg" alt="Map of London locations">
+                        </div>
+                    </div>
+
+                    <div class="houses-container">
+                        <div class="houses-grid">
+                            <div class="house-card">
+                                <img src="manor-1.jpg" alt="Mayfair Mansion">
+                                <div class="house-info">
+                                    <p class="house-type">Grand Manor - Mayfair</p>
+                                    <p class="house-price">From £450 / night</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="specific-place">
+            <div class="place-header">
+                <h2>The Featherington Estate</h2>
+            </div>
+
+            <div class="carousel-wrapper">
+                <div class="carousel">
+                    <img src="estate-1.jpg" alt="Room view 1">
+                </div>
+            </div>
+
+            <div class="place-bottom-container">
+                <div class="description-column">
+                    <div class="description-card">
+                        <h3>Estate and Gardens, Bath</h3>
+                        <h5>6 guests · 3 bedrooms · 2 bathrooms</h5>
+
+                        <div class="rating-summary">
+                            <span class="star-icon">★</span>
+                            <span class="rating-score">4.98</span>
+                            <span class="comment-count">(124 comments)</span>
+                        </div>
+
+                        <h6>Hosted by Lady Danbury</h6>
+                        <p class="full-description">
+                            Experience the height of Regency elegance. This estate offers sprawling gardens,
+                            hand-painted frescoes, and a ballroom fit for a Queen's favorite.
+                        </p>
+                    </div>
+
+                    <div class="ratings-section">
+                        <h1>Rating & Comments</h1>
+                        <div class="rate-cards-grid">
+                            <div class="rate-card">
+                                <div class="user-meta">
+                                    <img src="avatar-user.jpg" alt="User Avatar" class="avatar">
+                                    <div class="user-info">
+                                        <h6>Daphne B.</h6>
+                                        <p>Clyvedon, UK</p>
+                                    </div>
+                                </div>
+                                <p class="comment-text">Absolutely flawless. The attention to detail is remarkable.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="reservation-column">
+                    <div class="reservation-card sticky-sidebar">
+                        <form action="#" method="POST" class="reservation-form">
+                            <div class="form-group">
+                                <label for="checkin">Check-in</label>
+                                <input type="date" id="checkin" name="checkin">
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout">Check-out</label>
+                                <input type="date" id="checkout" name="checkout">
+                            </div>
+                            <div class="form-group">
+                                <label for="guests">Guests</label>
+                                <select id="guests" name="guests">
+                                    <option value="1">1 Guest</option>
+                                    <option value="2">2 Guests</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-reserve">Reserve Your Stay</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>Duchess & Duke</h3>
+                <p>Establishing the standards of luxury since 1880.</p>
+            </div>
+
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Settings</a></li>
+                    </ul>
+                </div>
+                <div class="link-group">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety Information</a></li>
+                        <li><a href="#">Cancellation Options</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Duchess and Duke Housing. All rights reserved. A Whistledown Media Production.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
