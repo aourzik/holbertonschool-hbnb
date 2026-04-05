@@ -1,0 +1,411 @@
+/* Importation de polices : Playfair Display pour le luxe, Montserrat pour la lisibilité */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --bridgerton-blue: #A2BED1;
+    --romantic-rose: #F4D7D4;
+    --silk-white: #F9F7F2;
+    --regency-gold: #B89D5E;
+    --dark-text: #2C3E50;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    /* Sans-serif pour tout le corps */
+    background-color: var(--silk-white);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+/* --- TITRES --- */
+h1,
+h2,
+h3,
+.whistledown-quote {
+    font-family: 'Playfair Display', serif;
+    /* Serif uniquement pour l'apparat */
+    font-weight: 700;
+    color: var(--dark-text);
+}
+
+/* --- NAVIGATION --- */
+.main-header {
+    background: rgba(249, 247, 242, 0.95);
+    padding: 1rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--bridgerton-blue);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-text);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--bridgerton-blue);
+}
+
+.btn-connect {
+    background-color: var(--bridgerton-blue);
+    color: white !important;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    height: 100vh;
+    /* Toute la hauteur de l'écran pour l'intro */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: white;
+    background-color: var(--dark-text);
+    /* Fond sombre pendant le chargement */
+}
+
+/* 1. Animation de la Vidéo (Dévoilement + Dé-zoom) */
+#hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.2);
+    /* Commence zoomée */
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    /* Derrière le texte */
+    object-fit: cover;
+    filter: brightness(0.6);
+    /* Ambiance sombre pour le texte */
+
+    opacity: 0;
+    /* Invisible au début */
+
+    /* Déclenchement de l'animation de la vidéo */
+    animation: revealVideo 1.8s ease-out forwards;
+}
+
+/* 2. Animation du Conteneur de Texte */
+.hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    /* Devant la vidéo */
+}
+
+/* 3. Animation du Titre H1 (Zoom léger + Apparition) */
+.hero-content h1 {
+    font-size: 4rem;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
+
+    opacity: 0;
+    /* Invisible au début */
+    transform: scale(0.8);
+    /* Commence petit */
+
+    /* Déclenchement de l'animation du titre (avec un délai) */
+    animation: zoomInText 1s ease-out 1.2s forwards;
+}
+
+/* 4. Animation du Sous-titre H3 (Apparition simple) */
+.hero-content h3 {
+    font-size: 1.5rem;
+    color: var(--romantic-rose);
+    /* Petite touche de rose */
+    font-family: 'Montserrat', sans-serif;
+    /* Plus moderne */
+    font-weight: 300;
+    letter-spacing: 3px;
+
+    opacity: 0;
+
+    /* Déclenchement (encore plus de délai) */
+    animation: fadeInSimple 1s ease-out 2s forwards;
+}
+
+/* ========================================== */
+/* --- DÉFINITION DES KEYFRAMES (Les Animations) --- */
+/* ========================================== */
+
+/* Animation pour la vidéo : Opacité de 0 à 1, Scale de 1.2 à 1 */
+@keyframes revealVideo {
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        /* Revient à la taille normale */
+    }
+}
+
+/* Animation pour le titre : Opacité de 0 à 1, Scale de 0.8 à 1 */
+@keyframes zoomInText {
+    to {
+        opacity: 1;
+        transform: scale(1);
+        /* Taille normale */
+    }
+}
+
+/* Animation simple pour le sous-titre */
+@keyframes fadeInSimple {
+    to {
+        opacity: 1;
+    }
+}
+
+/* --- INDICATEUR DE SCROLL --- */
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    /* Aligné en bas de la section hero */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+    opacity: 0;
+    /* Caché au début pour l'animation */
+    animation: fadeInSimple 1s ease-out 3s forwards;
+    /* Apparaît en tout dernier */
+}
+
+.scroll-indicator span {
+    color: var(--romantic-rose);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 400;
+}
+
+/* Dessin de la petite souris (Mouse icon) */
+.mouse {
+    width: 22px;
+    height: 35px;
+    border: 1px solid var(--silk-white);
+    border-radius: 20px;
+    position: relative;
+}
+
+.wheel {
+    width: 2px;
+    height: 6px;
+    background-color: var(--regency-gold);
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    animation: scrollWheel 2s infinite;
+}
+
+/* Flèche en chevron */
+.arrow span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-bottom: 1px solid var(--silk-white);
+    border-right: 1px solid var(--silk-white);
+    transform: rotate(45deg);
+    margin: -4px;
+    animation: arrowScroll 2s infinite;
+}
+
+.arrow .s-2 {
+    animation-delay: 0.2s;
+}
+
+/* --- ANIMATIONS DE L'INDICATEUR --- */
+
+@keyframes scrollWheel {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(15px);
+    }
+}
+
+@keyframes arrowScroll {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-5px, -5px);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+}
+
+/* --- SECTIONS GLOBALES --- */
+section {
+    padding: 5rem 10%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- CARDS --- */
+.about-cards-grid,
+.houses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.about-card,
+.house-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--romantic-rose);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.about-card:hover,
+.house-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(162, 190, 209, 0.2);
+}
+
+.about-card img,
+.house-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+/* --- FORMULAIRES & BOUTONS --- */
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--bridgerton-blue);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.btn-primary,
+.btn-reserve {
+    background-color: var(--regency-gold);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: #a3894a;
+}
+
+/* --- MODAL --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 62, 80, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--silk-white);
+    margin: 5% auto;
+    padding: 3rem;
+    border: 2px solid var(--regency-gold);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    position: relative;
+}
+
+/* --- FOOTER --- */
+.main-footer {
+    background-color: var(--bridgerton-blue);
+    color: white;
+    padding: 4rem 10% 2rem;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-links h4 {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid white;
+    display: inline-block;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+}
