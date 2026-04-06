@@ -12,11 +12,12 @@ place_amenity = db.Table(
 class Place(BaseModel):
     __tablename__ = 'places'
 
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(255), nullable=True)
+    title = db.Column(db.String(128), nullable=False)
+    description = db.Column(db.String(1024), nullable=True)
     price = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    is_available = db.Column(db.Boolean, default=True)
 
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
@@ -71,8 +72,9 @@ class Place(BaseModel):
             raise ValueError("user_id is required")
         return user_id
 
+
     def __init__(self, title, description=None, price=0.0, latitude=0.0,
-                longitude=0.0, owner_id=None, user_id=None):
+             longitude=0.0, owner_id=None, user_id=None, is_available=True):
         super().__init__()
         resolved_user_id = user_id if user_id is not None else owner_id
         self.title = self._validate_title(title)
@@ -81,7 +83,8 @@ class Place(BaseModel):
         self.latitude = self._validate_coordinate(latitude, "latitude", -90.0, 90.0)
         self.longitude = self._validate_coordinate(longitude, "longitude", -180.0, 180.0)
         self.user_id = self._validate_user_id(resolved_user_id)
-
+        self.is_available = is_available
+        
     @property
     def owner(self):
         return self.user
@@ -113,6 +116,11 @@ class Place(BaseModel):
 
         if "longitude" in data:
             self.longitude = self._validate_coordinate(data["longitude"], "longitude", -180.0, 180.0)
+        
+        if "is_available" in data:
+            if not isinstance(data["is_available"], bool):
+                raise TypeError("is_available must be a boolean")
+            self.is_available = data["is_available"]
 
         self.updated_at = current_time()
 
@@ -148,10 +156,10 @@ class Place(BaseModel):
 
     def to_dict(self):
         data = super().to_dict()
+        data["is_available"] = self.is_available
         data.pop('user_id', None)
-
-        owner_dict = self.owner.to_dict()
-        data["owner"] = owner_dict
-        data["amenities"] = [amenity.to_dict() for amenity in self.amenities]
+        if self.owner:
+            data["owner"] = self.owner.to_dict()
+            data["amenities"] = [amenity.to_dict() for amenity in self.amenities]
 
         return data

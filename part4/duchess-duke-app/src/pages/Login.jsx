@@ -10,21 +10,33 @@ export default function Login() {
     // 3. On utilise useContext(AuthContext) à la place de useAuth()
     const { login } = useContext(AuthContext);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Simulation de connexion (à remplacer plus tard par un appel API /auth/login)
-        const nameFromEmail = email.split('@')[0];
-        const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+        try {
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
 
-        const userData = {
-            name: formattedName,
-            email: email,
-            role: email.includes("admin") ? "Grand Steward" : "Member of the Ton"
-        };
+            if (response.ok) {
+                const data = await response.json();
 
-        login(userData);
-        navigate('/places'); // Redirection vers les manoirs après connexion
+                // On stocke le token JWT
+                if (data.access_token) {
+                    localStorage.setItem('token', data.access_token);
+                }
+
+                // On met à jour le contexte avec les infos de l'user
+                login(data.user);
+                navigate('/places');
+            } else {
+                alert("The Royal Guards have rejected your credentials.");
+            }
+        } catch (error) {
+            console.error("Login connection error:", error);
+        }
     };
 
     return (
