@@ -1,0 +1,1012 @@
+/* Importation de polices : Playfair Display, Montserrat*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --bridgerton-blue: #A2BED1;
+    --romantic-rose: #F4D7D4;
+    --silk-white: #F9F7F2;
+    --regency-gold: #B89D5E;
+    --dark-text: #2C3E50;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--silk-white);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+/* --- TITRES --- */
+h1,
+h2,
+h3,
+.whistledown-quote {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--dark-text);
+}
+
+/* --- NAVIGATION --- */
+.main-header {
+    background: rgba(249, 247, 242, 0.95);
+    padding: 1rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--bridgerton-blue);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- LE LIEN GLOBAL DU LOGO (POUR LE CLIC) --- */
+.logo-link {
+    text-decoration: none;
+    display: block;
+    transition: var(--transition);
+}
+
+.logo-link:hover {
+    transform: translateY(-1px);
+}
+
+/* --- LE CONTENEUR DU LOGO (FLEXBOX POUR L'ALIGNEMENT) --- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --- L'ICÔNE DE L'ABEILLE --- */
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* --- LE CONTENEUR DE TEXTE DU LOGO --- */
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- LE NOM PRINCIPAL (DUCHESS & DUKE) --- */
+.brand-name {
+    font-family: 'Playfair Display', serif;
+    /* La police luxueuse */
+    font-weight: 700;
+    font-size: 1.1rem;
+    /* Taille lisible mais fine */
+    color: var(--dark-text);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+/* --- LE SOUS-TITRE (HOUSING) --- */
+.brand-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--regency-gold);
+    letter-spacing: 3px;
+    margin-top: -2px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-text);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--bridgerton-blue);
+}
+
+.btn-connect {
+    background-color: var(--bridgerton-blue);
+    color: white !important;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    height: 91vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: white;
+    background-color: var(--dark-text);
+}
+
+/* 1. Animation de la Vidéo (Dévoilement + Dé-zoom) */
+#hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.2);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    object-fit: cover;
+    filter: brightness(0.6);
+    opacity: 0;
+    animation: revealVideo 1.8s ease-out forwards;
+}
+
+/* 2. Animation du Conteneur de Texte */
+.hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    /* Devant la vidéo */
+}
+
+/* 3. Animation du Titre H1 (Zoom léger + Apparition) */
+.hero-content h1 {
+    font-size: 4rem;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: scale(0.8);
+    animation: zoomInText 1s ease-out 1.2s forwards;
+}
+
+/* 4. Animation du Sous-titre H3 (Apparition simple) */
+.hero-content h3 {
+    font-size: 1.5rem;
+    color: var(--romantic-rose);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    letter-spacing: 3px;
+    opacity: 0;
+    animation: fadeInSimple 1s ease-out 2s forwards;
+}
+
+/* ========================================== */
+/* --- DÉFINITION DES KEYFRAMES (Les Animations) --- */
+/* ========================================== */
+
+/* Animation pour la vidéo : Opacité de 0 à 1, Scale de 1.2 à 1 */
+@keyframes revealVideo {
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Animation pour le titre : Opacité de 0 à 1, Scale de 0.8 à 1 */
+@keyframes zoomInText {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animation simple pour le sous-titre */
+@keyframes fadeInSimple {
+    to {
+        opacity: 1;
+    }
+}
+
+/* --- INDICATEUR DE SCROLL --- */
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeInSimple 1s ease-out 3s forwards;
+}
+
+.scroll-indicator span {
+    color: var(--romantic-rose);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 400;
+}
+
+/* Dessin de la petite souris (Mouse icon) */
+.mouse {
+    width: 22px;
+    height: 35px;
+    border: 1px solid var(--silk-white);
+    border-radius: 20px;
+    position: relative;
+}
+
+.wheel {
+    width: 2px;
+    height: 6px;
+    background-color: var(--regency-gold);
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    animation: scrollWheel 2s infinite;
+}
+
+/* Flèche en chevron */
+.arrow span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-bottom: 1px solid var(--silk-white);
+    border-right: 1px solid var(--silk-white);
+    transform: rotate(45deg);
+    margin: -4px;
+    animation: arrowScroll 2s infinite;
+}
+
+.arrow .s-2 {
+    animation-delay: 0.2s;
+}
+
+/* --- ANIMATIONS DE L'INDICATEUR --- */
+
+@keyframes scrollWheel {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(15px);
+    }
+}
+
+@keyframes arrowScroll {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-5px, -5px);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+}
+
+/* --- SECTION OUR VALUES--- */
+.values-section {
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 10%;
+    background-color: var(--silk-white);
+    text-align: center;
+    overflow: hidden;
+}
+
+.values-section .container {
+    max-width: 1400px;
+    width: 100%;
+}
+
+.title-luxury {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    text-shadow: 2px 4px 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.value-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 3.5rem;
+    color: var(--dark-text);
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
+
+/* --- LE SÉPARATEUR (TRAIT + IMAGE RONDE) --- */
+.separator-container {
+    position: relative;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
+
+/* Le trait léger en background */
+.separator-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--bridgerton-blue), transparent);
+    position: absolute;
+    z-index: 1;
+}
+
+/* LE CONTENEUR DE L'IMAGE (LE CERCLE) */
+.image-wrapper {
+    width: 80px;
+    height: 80px;
+
+    background-color: var(--silk-white);
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 2;
+    border: 1px solid rgba(184, 157, 94, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+    padding: 5px;
+    overflow: hidden;
+}
+
+/* L'IMAGE À L'INTÉRIEUR DU CERCLE */
+.value-image-round {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Citation Whistledown */
+.whistledown-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: var(--dark-text);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
+
+.whistledown-quote cite {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--regency-gold);
+}
+
+/* ========================================== */
+/* --- SYSTÈME DE REVEAL --- */
+/* ========================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- SECTION ABOUT US (50% de l'écran) --- */
+/* --- SÉPARATION AVEC LA SECTION PRÉCÉDENTE --- */
+.about {
+    position: relative;
+    width: 100%;
+    padding: 4rem 5%;
+    background-color: var(--silk-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--regency-gold), transparent);
+    opacity: 1;
+    z-index: 10;
+    display: block;
+}
+
+/* --- CONTENEUR ÉLARGI --- */
+.about .container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* --- TITRE ET DESCRIPTION CENTRÉS --- */
+.about .title-luxury {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
+
+.about .value-description {
+    max-width: 800px;
+    margin: 0 auto 4rem auto;
+}
+
+/* --- GRILLE DES CARTES  --- */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    width: 100%;
+    margin-top: 3rem;
+}
+
+/* STYLE DES CARTES */
+.about-card {
+    background-color: rgba(244, 215, 212, 0.4);
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid rgba(162, 190, 209, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.about-card:hover {
+    background-color: rgba(244, 215, 212, 0.7);
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(162, 190, 209, 0.25);
+}
+
+.card-image-container {
+    width: 100%;
+    height: 250px;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+/* --- SECTIONS GLOBALES --- */
+section {
+    padding: 5rem 10%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- CARDS --- */
+.about-cards-grid,
+.houses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+
+.house-card {
+    background: rgba(162, 190, 209, 0.25);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--romantic-rose);
+    transition: var(--transition);
+    text-align: center;
+}
+
+
+.house-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(162, 190, 209, 0.2);
+}
+
+.about-card img,
+.house-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+/* --- FORMULAIRES & BOUTONS --- */
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--bridgerton-blue);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.btn-primary,
+.btn-reserve {
+    background-color: var(--regency-gold);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: #a3894a;
+}
+
+/* --- MODAL --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 62, 80, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--silk-white);
+    margin: 5% auto;
+    padding: 3rem;
+    border: 2px solid var(--regency-gold);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    position: relative;
+}
+
+/* --- FOOTER --- */
+.main-footer {
+    background-color: var(--bridgerton-blue);
+    color: var(--dark-text);
+    padding: 4rem 10% 2rem;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-links h4 {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--dark-text);
+    display: inline-block;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links a {
+    color: var(--dark-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+}
+
+/* --- STYLE DU LOGO DANS LE FOOTER --- */
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer-logo-icon {
+    width: 200px;
+    height: auto;
+}
+
+.footer-logo-icon img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.footer-brand h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--dark-text);
+    margin-bottom: 0.8rem;
+    line-height: 1;
+}
+
+/* Alignement du bloc */
+@media (max-width: 768px) {
+    .footer-brand {
+        align-items: center;
+        text-align: center;
+    }
+}
+
+
+/* --- PAGE PLACES --- */
+/* --- CONTAINER GLOBAL --- */
+/* =========================================
+   ANIMATIONS D'ENTRÉE POUR LA PAGE PLACES 
+   ========================================= */
+
+/* 1. Définition de l'animation (Douce et vers le haut) */
+@keyframes royalReveal {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+        /* Part de 30px plus bas */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        /* Arrive à sa position normale */
+    }
+}
+
+/* 2. La classe de base à appliquer aux éléments */
+.reveal-on-load {
+    opacity: 0;
+    /* Caché par défaut */
+    animation: royalReveal 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    /* "forwards" pour que l'élément reste visible après l'animation */
+}
+
+/* 3. Les délais pour l'effet "Cascade" (Les uns après les autres) */
+
+/* Le titre arrive en premier */
+.delay-1 {
+    animation-delay: 0.1s;
+}
+
+/* Le sous-titre et le bouton filtre */
+.delay-2 {
+    animation-delay: 0.3s;
+}
+
+/* La grille de cartes de gauche */
+.delay-3 {
+    animation-delay: 0.5s;
+}
+
+/* La carte interactive de droite */
+.delay-4 {
+    animation-delay: 0.7s;
+}
+
+/* Les cartes elles-mêmes (optionnel, pour un effet encore plus fou) */
+.estate-card:nth-child(1) {
+    animation-delay: 0.6s;
+}
+
+.estate-card:nth-child(2) {
+    animation-delay: 0.7s;
+}
+
+.estate-card:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+
+.places-container {
+    max-width: 1600px;
+    margin: 50px auto 0;
+    padding: 2%;
+}
+
+.places-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--regency-gold);
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* LE BOUTON FILTRE */
+.btn-filter-toggle {
+    background: white;
+    border: 1px solid var(--bridgerton-blue);
+    padding: 0.6rem 1.2rem;
+    margin-top: 0.6rem;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.3s;
+    color: var(--dark-text);
+}
+
+.btn-filter-toggle:hover {
+    background: var(--silk-white);
+    border-color: var(--regency-gold);
+}
+
+/* LE MENU DÉROULANT */
+.filters-dropdown {
+    display: flex;
+    gap: 40px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1.5rem 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(162, 190, 209, 0.2);
+    margin-top: 0.5rem;
+
+    /* --- LES 3 LIGNES CLÉS POUR LE CENTRAGE ET LA LARGEUR --- */
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    animation: fadeInDown 0.6s ease-out;
+    backdrop-filter: blur(5px);
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-item span {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--regency-gold);
+    font-weight: 700;
+}
+
+.filter-item input[type="text"] {
+    border: 1px solid #eee;
+    padding: 8px 12px;
+    border-radius: 6px;
+    outline: none;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- LE WRAPPER QUI GÈRE LE SPLIT --- */
+.places-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 550px;
+    gap: 40px;
+    align-items: start;
+}
+
+/* --- LA GRILLE DE GAUCHE (RETOUR AU STYLE INITIAL) --- */
+.estates-list-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+/* --- TES CARTES "QUI ONT DE LA GUEULE" --- */
+.estate-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: var(--transition);
+    border: 1px solid rgba(162, 190, 209, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.estate-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.estate-image-container {
+    position: relative;
+    height: 320px;
+}
+
+.estate-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.status-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.status-badge.available {
+    background-color: rgba(162, 190, 209, 0.9);
+    color: white;
+}
+
+.status-badge.booked {
+    background-color: rgba(44, 62, 80, 0.8);
+    color: var(--romantic-rose);
+}
+
+.estate-content {
+    padding: 2rem;
+}
+
+.estate-content h3 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.location {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.5rem;
+}
+
+.estate-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Centre verticalement le prix et le bouton */
+    border-top: 1px solid #f0f0f0;
+    padding-top: 1.5rem;
+    margin-top: auto;
+    /* Pousse le footer tout en bas si le texte est court */
+}
+
+.btn-reserve {
+    background: transparent;
+    border: 1px solid var(--regency-gold);
+    color: var(--regency-gold);
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-reserve:hover {
+    color: white;
+    background-color: var(--regency-gold);
+    box-shadow: 0 4px 15px rgba(184, 157, 94, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-reserve:active {
+    transform: translateY(0);
+}
+
+/* Optionnel : Si tu veux que le prix soit aussi un peu plus "Royal" */
+.price {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--dark-text);
+    white-space: nowrap;
+    /* EMPÊCHE LE SYMBOLE DE PASSER AU-DESSUS */
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    /* Espace entre le £ et le chiffre */
+}
+
+.price span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: #888;
+    margin-left: 4px;
+}
+
+/* --- LA MAP STICKY --- */
+.map-sidebar {
+    height: 100%;
+}
+
+.sticky-map {
+    position: sticky;
+    top: 120px;
+    height: 700px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--bridgerton-blue);
+}
+
+.map-frame {
+    width: 100%;
+    height: 100%;
+    background-image: url('https://www.maproom.net/wp-content/uploads/Old-London-Map.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
