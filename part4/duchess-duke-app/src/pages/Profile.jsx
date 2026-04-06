@@ -1,17 +1,11 @@
-import React, { useState, useContext } from 'react'; // Ne pas oublier useState ici !
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Profile() {
     const navigate = useNavigate();
-
-    // On récupère les infos de l'utilisateur et la fonction logout depuis le contexte
     const { user, logout, isLoggedIn } = useContext(AuthContext);
 
-    // États pour gérer l'édition (si tu en as besoin)
-    const [isEditing, setIsEditing] = useState(false);
-
-    // Sécurité : si l'utilisateur n'est pas connecté, on le renvoie au login
     if (!isLoggedIn) {
         return (
             <div className="container" style={{ padding: '100px', textAlign: 'center' }}>
@@ -27,47 +21,89 @@ export default function Profile() {
         navigate('/');
     };
 
+    // On récupère les reviews de l'utilisateur s'il y en a
+    const userReviews = user?.reviews || [];
+
     return (
-        <div className="profile-page reveal-on-load">
-            <div className="container">
-                <header className="profile-header">
-                    <h1 className="title-luxury">Your Royal Ledger</h1>
-                    <p className="subtitle">Welcome back, {user?.name}</p>
-                </header>
+        <div className="selected-place-page">
+            <div className="profile-wrapper reveal-on-load">
 
-                <div className="profile-grid">
-                    {/* Colonne de gauche : Infos utilisateur */}
-                    <div className="profile-info-card card-luxury">
-                        <div className="profile-avatar-section">
-                            <img src="/images/violette.jpg" alt="User Avatar" className="large-avatar" />
-                            <h2>{user?.name}</h2>
-                            <span className="user-role-badge">{user?.role}</span>
+                {/* --- SIDEBAR GAUCHE (INFOS) --- */}
+                <aside className="profile-sidebar">
+                    <div className="profile-avatar-container">
+                        <img src="/images/violette.jpg" alt="User Avatar" className="profile-avatar" />
+                        <span className="role-badge">{user?.role || "Member"}</span>
+                    </div>
+
+                    <h2 className="profile-name">{user?.name}</h2>
+                    <p className="subtitle" style={{ marginBottom: '10px' }}>{user?.email}</p>
+
+                    <div className="profile-stats">
+                        <div>
+                            <span className="stat-value">0</span>
+                            <span className="stat-label">Bookings</span>
                         </div>
-
-                        <div className="profile-details">
-                            <div className="detail-item">
-                                <strong>Email</strong>
-                                <span>{user?.email}</span>
-                            </div>
-                            <div className="detail-item">
-                                <strong>Status</strong>
-                                <span>Member of the Ton</span>
-                            </div>
+                        <div>
+                            {/* Affichage dynamique du nombre de reviews */}
+                            <span className="stat-value">{userReviews.length}</span>
+                            <span className="stat-label">Reviews</span>
                         </div>
+                    </div>
 
-                        <button className="btn-logout-full" onClick={handleLogout}>
-                            Depart from the Ton (Logout)
+                    <div style={{ marginTop: '30px' }}>
+                        <button className="btn-logout-nav" onClick={handleLogout} style={{ width: '100%' }}>
+                            Depart from the Ton
                         </button>
                     </div>
+                </aside>
 
-                    {/* Colonne de droite : Historique / Activité */}
-                    <div className="profile-activity-card card-luxury">
-                        <h3>Recent Transactions & Reservations</h3>
+                {/* --- CONTENU DROITE (ACTIVITÉ) --- */}
+                <main className="profile-main-content">
+                    <h2 className="section-title">Your Royal Ledger</h2>
+
+                    <div className="activity-section">
+                        <h3 className="whistledown-quote" style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '20px' }}>
+                            Your Latest Gossip & Reviews
+                        </h3>
+
                         <div className="activity-list">
-                            <p className="empty-message">No recent movements in your ledger, My Lord.</p>
+                            {userReviews.length > 0 ? (
+                                // On boucle sur les vraies reviews issues du Seed
+                                userReviews.map((rev, index) => (
+                                    <div key={index} className="review-item" style={{ marginBottom: '20px' }}>
+                                        <div className="review-header">
+                                            <span className="stars">
+                                                {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                                            </span>
+                                            <strong style={{ color: 'var(--regency-gold)', fontSize: '0.8rem' }}>
+                                                {rev.place_name || "Mansion Visit"}
+                                            </strong>
+                                        </div>
+                                        <p className="review-text">"{rev.text}"</p>
+                                    </div>
+                                ))
+                            ) : (
+                                // Message de Lady Whistledown si aucune review
+                                <div className="review-item">
+                                    <p className="review-text" style={{ textAlign: 'center' }}>
+                                        "It appears your social calendar is currently empty, My Lord.
+                                        The season is young, and many estates await your presence."
+                                    </p>
+                                    <cite style={{ display: 'block', textAlign: 'right', marginTop: '10px', color: 'var(--regency-gold)' }}>
+                                        — Lady Whistledown
+                                    </cite>
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ marginTop: '30px', textAlign: 'center' }}>
+                            <button className="btn-reserve" onClick={() => navigate('/places')} style={{ width: 'auto', padding: '10px 40px' }}>
+                                Browse More Estates
+                            </button>
                         </div>
                     </div>
-                </div>
+                </main>
+
             </div>
         </div>
     );
