@@ -6,7 +6,7 @@ const ESTATES_DATA = [
         price: "5,000",
         image: "/images/estate1.jpg",
         status: "Available",
-        coordinates: [51.5113, -0.1473] // Coordonnées GPS
+        coordinates: [51.5113, -0.1473]
     },
     {
         id: 2,
@@ -48,12 +48,12 @@ export default function SelectedPlace() {
     // --- 2. RÉCUPÉRATION DE LA DONNÉE ---
     const estate = ESTATES_DATA.find(item => item.id === Number(id));
 
-    // --- 3. SÉCURITÉ (Gilet de sauvetage) ---
+    // --- 3. SÉCURITÉ ---
     if (!estate) {
         return <div className="container" style={{ padding: '100px' }}>Estate not found...</div>;
     }
 
-    // --- 4. LOGIQUE DE CALCUL (Seulement si estate existe) ---
+    // --- 4. LOGIQUE DE CALCUL  ---
     const today = new Date().toISOString().split('T')[0];
 
     // On transforme "5,000" en nombre 5000
