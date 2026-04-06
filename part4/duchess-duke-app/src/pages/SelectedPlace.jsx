@@ -28,10 +28,11 @@ const ESTATES_DATA = [
     }
 ];
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { useAuth } from '../context/AuthContext';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -82,7 +83,35 @@ export default function SelectedPlace() {
     // États pour stocker les dates
     const [arrivalDate, setArrivalDate] = React.useState("");
 
+    // État pour contrôler l'affichage du modal de confirmation
+    const [showModal, setShowModal] = useState(false);
 
+    // Récupération de l'état d'authentification et des fonctions de login/logout
+    const { isLoggedIn, login } = useAuth();
+
+    // État pour contrôler l'affichage du modal de login (si l'utilisateur n'est pas connecté)
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    // États pour les inputs du formulaire de login
+    const [emailInput, setEmailInput] = useState("");
+    const [passwordInput, setPasswordInput] = useState("");
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        // On extrait le nom à partir de l'email
+        const nameFromEmail = emailInput.split('@')[0];
+        const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+
+        const userData = {
+            name: formattedName,
+            role: emailInput.includes("admin") ? "Grand Steward" : "Member of the Ton",
+            email: emailInput
+        };
+
+        login(userData);
+        setShowLoginModal(false);
+    };
 
     return (
         <div className="selected-place-page reveal-on-load">
@@ -213,15 +242,105 @@ export default function SelectedPlace() {
                                 </div>
                             )}
 
-                            <button className="btn-book-now" disabled={totalDays <= 0}>
-                                Reserve this Estate
-                            </button>
+                            {isLoggedIn ? (
+                                <button
+                                    className="btn-book-now"
+                                    disabled={totalDays <= 0}
+                                    onClick={() => setShowModal(true)}
+                                >
+                                    Reserve this Estate
+                                </button>
+                            ) : (
+                                <button className="btn-login-to-book" onClick={() => setShowLoginModal(true)}>
+                                    Login to Reserve
+                                </button>
+                            )}
                             <p className="booking-note">You won't be charged yet</p>
                         </div>
                     </aside>
 
                 </div> {/* Fin du layout */}
             </div>
+            {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content reveal-on-load">
+                        <button className="close-modal" onClick={() => setShowModal(false)}>&times;</button>
+                        <div className="modal-header">
+                            <i className="fas fa-check-circle success-icon"></i>
+                            <h2>Reservation Request Sent</h2>
+                        </div>
+                        <div className="modal-body">
+                            <p>Your request for <strong>{estate.name}</strong> has been received, My Lord.</p>
+                            <div className="summary-details">
+                                <span><i className="far fa-calendar"></i> {checkIn} to {checkOut}</span>
+                                <span><i className="fas fa-coins"></i> Total: £ {totalPrice.toLocaleString()}</span>
+                            </div>
+                            <p className="note">The Estate Manager will contact you shortly via courier.</p>
+                        </div>
+                        <button className="btn-gold-full" onClick={() => navigate('/places')}>
+                            Return to the Ton
+                        </button>
+                    </div>
+                </div>
+            )}
+            {showLoginModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content login-modal reveal-on-load">
+                        <button className="close-modal" onClick={() => setShowLoginModal(false)}>&times;</button>
+
+                        <div className="modal-header">
+                            <h2 className="title-luxury">Welcome back to the Ton</h2>
+                            <p className="subtitle">Sign in to manage your royal estates</p>
+                        </div>
+
+                        <form className="login-form" onSubmit={handleLogin}>
+                            <div className="form-group">
+                                <label>Email Address</label>
+                                <div className="input-wrapper">
+                                    <i className="fas fa-envelope"></i>
+                                    {/* Champ Email */}
+                                    <input
+                                        type="email"
+                                        placeholder="lady.whistledown@ton.com"
+                                        required
+                                        value={emailInput}
+                                        onChange={(e) => setEmailInput(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Password</label>
+                                <div className="input-wrapper">
+                                    <i className="fas fa-lock"></i>
+                                    <input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        required
+                                        value={passwordInput}
+                                        onChange={(e) => setPasswordInput(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-options">
+                                <label className="remember-me">
+                                    <input type="checkbox" /> Remember me
+                                </label>
+                                <a href="#" className="forgot-pass">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" className="btn-gold-full">
+                                Sign In
+                            </button>
+                        </form>
+
+                        <div className="modal-footer">
+                            <p>Not a member of the Ton yet? <a href="#">Apply for an invite</a></p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

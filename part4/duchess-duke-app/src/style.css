@@ -131,6 +131,33 @@ h3,
     border-radius: 50px;
 }
 
+.btn-logout-nav {
+    background: var(--romantic-rose);
+    border: none;
+    color: var(--dark-text);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.btn-logout-nav:hover {
+    background: #e6b7b1dc;
+    color: white;
+}
+
+.user-welcome {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #666;
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
 /* --- HERO SECTION --- */
 .hero {
     height: 91vh;
@@ -1324,7 +1351,8 @@ select {
     background: transparent;
 }
 
-.btn-book-now {
+.btn-book-now,
+.btn-login-to-book {
     width: 100%;
     background: var(--regency-gold);
     color: white;
@@ -1339,7 +1367,8 @@ select {
     transition: all 0.3s ease;
 }
 
-.btn-book-now:hover {
+.btn-book-now:hover,
+.btn-login-to-book:hover {
     background: #8a6d3b;
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(184, 150, 87, 0.3);
@@ -1350,6 +1379,15 @@ select {
     font-size: 0.8rem;
     color: #999;
     margin-top: 15px;
+}
+
+/* Optionnel : ajouter une petite icône de cadenas avant le texte */
+.btn-login-to-book::before {
+    content: "\f023";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 0.9rem;
+    margin-right: 10px;
 }
 
 /* --- RESPONSIVE --- */
@@ -1371,4 +1409,541 @@ select {
     .carousel-container {
         height: 400px;
     }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    /* Fond sombre transparent */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+    /* Flou artistique en arrière-plan */
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--regency-gold);
+    margin-bottom: 20px;
+}
+
+.summary-details {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-gold-full {
+    background: var(--regency-gold);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+}
+
+/* Styles spécifiques pour la Modal de Login */
+.login-modal {
+    max-width: 450px;
+}
+
+.subtitle {
+    font-family: 'Montserrat', sans-serif;
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+.login-form {
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    color: var(--regency-gold);
+    font-size: 0.9rem;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    transition: border 0.3s;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: var(--regency-gold);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 25px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.forgot-pass {
+    color: var(--regency-gold);
+    text-decoration: none;
+}
+
+.modal-footer {
+    margin-top: 25px;
+    font-size: 0.85rem;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.modal-footer a {
+    color: var(--regency-gold);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* --- LOGIN PAGE ---*/
+.login-page {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fcfaf7;
+    /* Un blanc cassé très léger */
+    padding: 20px;
+}
+
+.login-container {
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--regency-gold);
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    transition: 0.3s;
+}
+
+.input-with-icon input:focus {
+    border-color: var(--regency-gold);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(197, 168, 122, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    font-size: 0.85rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.forgot-link {
+    color: var(--regency-gold);
+    text-decoration: none;
+}
+
+.login-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.login-footer a {
+    color: var(--regency-gold);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+/* --- PAGE RESERVATIONS --- */
+
+.reservation-card {
+    background: white;
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.reservation-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.completed {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.upcoming {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.btn-review {
+    background-color: var(--regency-gold);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- PAGE PROFILE ---*/
+/* Layout Global de la page Profil */
+.profile-wrapper {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+    max-width: 1400px;
+    /* Augmente la largeur max */
+    width: 95%;
+    /* Prend 95% de l'écran si l'écran est petit */
+    margin: 40px auto;
+    /* Centre le bloc sur la page */
+    align-items: start;
+    min-height: 80vh;
+    /* Force une hauteur minimum pour éviter le carré "écrasé" */
+}
+
+/* Sidebar Style */
+.profile-sidebar {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    border: 1px solid #f0e6d2;
+    position: sticky;
+    top: 100px;
+}
+
+.profile-avatar-container {
+    position: relative;
+    width: 140px;
+    margin: 0 auto 20px;
+}
+
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--bridgerton-blue);
+    padding: 4px;
+}
+
+.role-badge {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bridgerton-blue);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--regency-gold);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* Cartes de réservations */
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    color: var(--dark-text);
+}
+
+.res-card {
+    display: flex;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    height: 160px;
+}
+
+.res-image {
+    width: 220px;
+    background-size: cover;
+    background-position: center;
+}
+
+.res-details {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.res-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+}
+
+.status-badge.completed {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.upcoming {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.btn-review-action {
+    background: none;
+    border: 1px solid var(--regency-gold);
+    color: var(--regency-gold);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.3s;
+    width: fit-content;
+}
+
+.btn-review-action:hover {
+    background: var(--regency-gold);
+    color: white;
+}
+
+/* Style des Reviews */
+.review-item {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 5px solid var(--regency-gold);
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.stars {
+    color: var(--regency-gold);
+}
+
+.review-text {
+    font-style: italic;
+    color: #444;
+    line-height: 1.6;
+}
+
+/* --- REVIEW MODAL -- */
+/* L'overlay (le fond sombre qui couvre tout) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(66, 66, 66, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+}
+
+/* La boîte de dialogue Review (on copie le style de la login-modal) */
+.modal-content.review-modal {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    /* Même largeur que ton login */
+    position: relative;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* Style spécifique pour les étoiles dans la modal */
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    font-size: 2.5rem;
+}
+
+.star {
+    cursor: pointer;
+    color: #e0e0e0;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.star.active {
+    color: var(--regency-gold);
+}
+
+/* Le champ texte */
+.review-modal textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
+    resize: none;
+}
+
+.review-modal textarea:focus {
+    outline: none;
+    border-color: var(--regency-gold);
 }
