@@ -1,92 +1,61 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useContext } from 'react'; // 1. On ajoute useContext
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // 2. On importe AuthContext (avec accolades)
 
 export default function Login() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-
-    // États pour le formulaire
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    // 3. On utilise useContext(AuthContext) à la place de useAuth()
+    const { login } = useContext(AuthContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        let userData;
+        // Simulation de connexion (à remplacer plus tard par un appel API /auth/login)
+        const nameFromEmail = email.split('@')[0];
+        const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
 
-        // PETITE ASTUCE POUR TES TESTS :
-        // Si l'email contient "admin", on te connecte en tant qu'administrateur
-        if (email.includes("admin")) {
-            userData = {
-                name: "Grand Steward",
-                email: email,
-                role: "admin" // <--- C'est la clé !
-            };
-        } else {
-            userData = {
-                name: email.split('@')[0],
-                email: email,
-                role: "user"
-            };
-        }
+        const userData = {
+            name: formattedName,
+            email: email,
+            role: email.includes("admin") ? "Grand Steward" : "Member of the Ton"
+        };
 
         login(userData);
-        navigate('/places');
+        navigate('/places'); // Redirection vers les manoirs après connexion
     };
 
     return (
         <div className="login-page">
-            <div className="login-container reveal-on-load">
-                <div className="login-header">
-                    <h1 className="title-luxury">Sign In to the Ton</h1>
-                    <p className="subtitle">Enter your credentials to access the royal registry</p>
-                </div>
+            <div className="login-card reveal-on-load">
+                <h2 className="title-luxury">Enter the Ton</h2>
+                <p className="subtitle">Sign in to your royal account</p>
 
-                <form className="login-form" onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">
                         <label>Email Address</label>
-                        <div className="input-with-icon">
-                            <i className="fas fa-envelope"></i>
-                            <input
-                                type="email"
-                                placeholder="your.name@regency.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
+                        <input
+                            type="email"
+                            placeholder="lady.whistledown@ton.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
                     </div>
-
                     <div className="form-group">
                         <label>Password</label>
-                        <div className="input-with-icon">
-                            <i className="fas fa-lock"></i>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
                     </div>
-
-                    <div className="form-actions">
-                        <label className="checkbox-container">
-                            <input type="checkbox" /> Remember me
-                        </label>
-                        <a href="#" className="forgot-link">Forgot password?</a>
-                    </div>
-
-                    <button type="submit" className="btn-gold-full">
-                        Enter the Estate Registry
-                    </button>
+                    <button type="submit" className="btn-gold-full">Sign In</button>
                 </form>
-
-                <div className="login-footer">
-                    <p>Not yet a member? <Link to="/register">Apply for an invitation</Link></p>
-                </div>
             </div>
         </div>
     );

@@ -1,13 +1,17 @@
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Import du cerveau global
+
+// 2. On importe 'AuthContext' (avec les accolades) et PAS 'useAuth'
+import { AuthContext } from '../context/AuthContext';
 
 export default function Navbar() {
-    const { isLoggedIn, user, logout } = useAuth();
+    // 3. On remplace 'useAuth()' par 'useContext(AuthContext)'
+    const { isLoggedIn, logout, user } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
-        navigate('/'); // Redirige vers l'accueil après déconnexion
+        navigate('/');
     };
 
     return (
