@@ -31,17 +31,23 @@ def seed_all():
         print("--- 3. Création des Utilisateurs ---")
         # On crée une liste pour pouvoir piocher dedans plus tard
         users = {
-            "admin": User(first_name="Lady", last_name="Whistledown", email="admin@ton.com", is_admin=True),
-            "simon": User(first_name="Simon", last_name="Basset", email="duke@hastings.com"),
-            "daphne": User(first_name="Daphne", last_name="Bridgerton", email="daphne@bridgerton.com"),
-            "anthony": User(first_name="Anthony", last_name="Bridgerton", email="viscount@bridgerton.com"),
-            "eloise": User(first_name="Eloise", last_name="Bridgerton", email="eloise@rebel.com"),
-            "penelope": User(first_name="Penelope", last_name="Featherington", email="penelope@ton.com")
+            "admin": User(
+                first_name="Lady", 
+                last_name="Whistledown", 
+                email="admin@ton.com", 
+                password="password123", # <--- Ajoute-le ici
+                is_admin=True
+            ),
+            "simon": User(first_name="Simon", last_name="Basset", email="duke@hastings.com", password="password123"),
+            "daphne": User(first_name="Daphne", last_name="Bridgerton", email="daphne@bridgerton.com", password="password123"),
+            "anthony": User(first_name="Anthony", last_name="Bridgerton", email="viscount@bridgerton.com", password="password123"),
+            "eloise": User(first_name="Eloise", last_name="Bridgerton", email="eloise@rebel.com", password="password123"),
+            "penelope": User(first_name="Penelope", last_name="Featherington", email="penelope@ton.com", password="password123")
         }
         
         for u in users.values():
-            u.hash_password("password123")
             db.session.add(u)
+        
         db.session.commit()
 
         print("--- 4. Création des 10 Manoirs ---")

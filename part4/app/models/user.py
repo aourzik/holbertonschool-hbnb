@@ -67,9 +67,17 @@ class User(BaseModel):
         return bcrypt.check_password_hash(self.password, password)
 
     def to_dict(self):
-        """Serialize the user without exposing the password hash."""
+        """Serialize the user with reviews for the profile page."""
         data = super().to_dict()
         data.pop("password", None)
+        data["reviews"] = [
+            {
+                "id": r.id,
+                "text": r.text,
+                "rating": r.rating,
+                "place_name": r.place.title
+            } for r in self.reviews
+        ]
         return data
 
     def update(self, data):
