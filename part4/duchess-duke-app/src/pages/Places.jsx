@@ -38,6 +38,8 @@ import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
+import { useNavigate } from 'react-router-dom';
+
 let DefaultIcon = L.icon({
     iconUrl: markerIcon,
     shadowUrl: markerShadow,
@@ -47,6 +49,8 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function Places() {
+
+    const navigate = useNavigate();
 
     const [showFilters, setShowFilters] = useState(false); // Pour afficher/cacher le menu
     const [searchTerm, setSearchTerm] = useState("");
@@ -70,15 +74,14 @@ export default function Places() {
             <header className="places-header">
                 <h1 className="title-luxury reveal-on-load delay-1">Our Royal Residences</h1>
                 <p className="subtitle reveal-on-load delay-2">Discover the most exquisite estates of the Ton</p>
-                {/* BOUTON DISCRET */}
+
                 <button
                     className="btn-filter-toggle reveal-on-load delay-2"
                     onClick={() => setShowFilters(!showFilters)}
                 >
-                    <i className="fas fa-sliders-h reveal-on-load delay-2"></i> {showFilters ? "Close Filters" : "Filters"}
+                    <i className="fas fa-sliders-h"></i> {showFilters ? "Close Filters" : "Filters"}
                 </button>
 
-                {/* LE MENU DÉROULANT (DROPDOWN) */}
                 {showFilters && (
                     <div className="filters-dropdown">
                         <div className="filter-item">
@@ -104,29 +107,44 @@ export default function Places() {
                 )}
             </header>
 
-            <div className="places-content-wrapper reveal-on-load delay-3">
-                {/* LA GRILLE DE GAUCHE */}
-                <div className="estates-list-grid">
-                    {filteredEstates.map((estate) => (
-                        <div key={estate.id} className="estate-card">
-                            {/* ... ton code de carte habituel ... */}
-                            <div className="estate-image-container">
-                                <img src={estate.image} alt={estate.name} />
-                                <span className={`status-badge ${estate.status.toLowerCase()}`}>{estate.status}</span>
-                            </div>
-                            <div className="estate-content">
-                                <h3>{estate.name}</h3>
-                                <p className="location">{estate.location}</p>
-                                <div className="estate-footer">
-                                    <span className="price">£ {estate.price}</span>
-                                    <button className="btn-reserve">View Details</button>
+            {/* --- NOUVEAU PARENT : Il solidarise la liste et la map --- */}
+            <div className="main-layout-grid">
+
+                {/* COLONNE GAUCHE (LISTE) */}
+                <div className="places-content-wrapper reveal-on-load delay-3">
+                    <div className="estates-list-grid">
+                        {filteredEstates.map((estate) => (
+                            <div key={estate.id} className="estate-card">
+                                <div
+                                    className="estate-image-container"
+                                    onClick={() => navigate(`/estate/${estate.id}`)}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <img src={estate.image} alt={estate.name} />
+                                    <span className={`status-badge ${estate.status.toLowerCase()}`}>
+                                        {estate.status}
+                                    </span>
+                                </div>
+
+                                <div className="estate-content">
+                                    <h3>{estate.name}</h3>
+                                    <p className="location">{estate.location}</p>
+                                    <div className="estate-footer">
+                                        <span className="price">£ {estate.price}</span>
+                                        <button
+                                            className="btn-reserve"
+                                            onClick={() => navigate(`/estate/${estate.id}`)}
+                                        >
+                                            View Details
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
 
-                {/* LA SIDEBAR AVEC LA VRAIE MAP */}
+                {/* COLONNE DROITE (MAP) */}
                 <aside className="map-sidebar reveal-on-load delay-4">
                     <div className="sticky-map">
                         <MapContainer
@@ -136,10 +154,8 @@ export default function Places() {
                         >
                             <TileLayer
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                attribution='&copy; OpenStreetMap contributors'
                             />
-
-                            {/* ON BOUCLE SUR LES DONNÉES POUR METTRE LES MARQUEURS */}
                             {filteredEstates.map((estate) => (
                                 <Marker key={estate.id} position={estate.coordinates}>
                                     <Popup>
@@ -151,7 +167,8 @@ export default function Places() {
                         </MapContainer>
                     </div>
                 </aside>
-            </div>
-        </div >
+
+            </div> {/* Fin de main-layout-grid */}
+        </div>
     );
 }

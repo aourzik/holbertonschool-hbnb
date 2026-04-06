@@ -842,11 +842,16 @@ select {
 }
 
 /* --- LE WRAPPER QUI GÈRE LE SPLIT --- */
-.places-content-wrapper {
+
+.main-layout-grid {
     display: grid;
-    grid-template-columns: 1fr 550px;
-    gap: 40px;
+    /* On définit deux colonnes : la liste (flexible) et la map (450px fixe) */
+    grid-template-columns: 1fr 450px;
+    gap: 30px;
+    padding: 0 40px;
+    margin-top: 30px;
     align-items: start;
+    /* Garde la map alignée en haut */
 }
 
 /* --- LA GRILLE DE GAUCHE (RETOUR AU STYLE INITIAL) --- */
@@ -1009,4 +1014,308 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* =========================================
+   PAGE DETAIL : SELECTED PLACE
+   ========================================= */
+
+.selected-place-page {
+    padding: 80px 0 80px;
+    background-color: var(--silk-white);
+    min-height: 100vh;
+}
+
+/* --- LE BOUTON RETOUR --- */
+.btn-back {
+    background: transparent;
+    border: none;
+    color: var(--regency-gold);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    margin-bottom: 25px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-back:hover {
+    transform: translateX(-5px);
+    color: var(--dark-text);
+}
+
+/* --- HEADER DE LA PAGE --- */
+.place-header-detail {
+    margin-bottom: 30px;
+}
+
+.place-header-detail h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.location-detail {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+/* --- LE CARROUSEL --- */
+/* On s'assure que le conteneur du Swiper est la référence pour les flèches */
+.swiper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-container {
+    width: 100%;
+    height: 550px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    background: #eee;
+}
+
+.carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Personnalisation Swiper (Flèches et Points) */
+.selected-place-page .swiper-button-next,
+.selected-place-page .swiper-button-prev {
+    color: white !important;
+    background: none;
+    top: 55%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+    font-size: 1.2rem;
+}
+
+.selected-place-page .swiper-button-next:hover,
+.selected-place-page .swiper-button-prev:hover {
+    background: var(--regency-gold);
+}
+
+.selected-place-page .swiper-pagination-bullet-active {
+    background: var(--regency-gold) !important;
+}
+
+/* --- LE LAYOUT (GRILLE 2 COLONNES) --- */
+.place-content-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    /* COLONNE GAUCHE / COLONNE DROITE */
+    gap: 70px;
+    align-items: start;
+}
+
+/* --- COLONNE GAUCHE (INFOS) --- */
+.host-intro {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.host-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--regency-gold);
+}
+
+.host-intro h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 3px;
+}
+
+.host-meta {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.separator {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 35px 0;
+}
+
+.description-section h3,
+.reviews-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+}
+
+.description-section p {
+    line-height: 1.8;
+    color: #444;
+    font-size: 1.05rem;
+}
+
+.amenities-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-top: 20px;
+}
+
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.amenity-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.amenity-item i {
+    color: var(--regency-gold);
+}
+
+.review-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 15px;
+    border: 1px solid #f0f0f0;
+}
+
+.review-item strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--dark-text);
+}
+
+/* --- COLONNE DROITE (BOOKING CARD) --- */
+.booking-sidebar {
+    position: sticky;
+    top: 120px;
+    /* Reste en haut au scroll */
+    z-index: 10;
+}
+
+.booking-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.price-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.price-big small {
+    font-size: 0.9rem;
+    color: #777;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+}
+
+.booking-inputs {
+    margin-top: 25px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.input-group {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.input-group:last-child {
+    border-bottom: none;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--regency-gold);
+    margin-bottom: 5px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: var(--dark-text);
+    background: transparent;
+}
+
+.btn-book-now {
+    width: 100%;
+    background: var(--regency-gold);
+    color: white;
+    border: none;
+    padding: 1.1rem;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-book-now:hover {
+    background: #8a6d3b;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(184, 150, 87, 0.3);
+}
+
+.booking-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 15px;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .place-content-layout {
+        grid-template-columns: 1fr;
+        /* Une seule colonne sur tablette/mobile */
+        gap: 40px;
+    }
+
+    .booking-sidebar {
+        position: sticky;
+        top: 110px;
+        z-index: 9;
+        /* Un cran en dessous de la navbar pour éviter les bugs visuels */
+        height: fit-content;
+    }
+
+    .carousel-container {
+        height: 400px;
+    }
 }
