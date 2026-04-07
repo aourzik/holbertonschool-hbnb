@@ -2195,16 +2195,122 @@ select {
     margin-bottom: 0;
 }
 
+.file-upload-section {
+    margin-bottom: 40px;
+}
+
 .file-upload-wrapper {
     background: rgba(212, 175, 55, 0.05);
     /* Un léger fond doré */
-    border: 1px dashed #d4af37;
-    padding: 20px;
+    border: 2px dashed #d4af37;
+    /* Bordure pointillée dorée */
+    padding: 30px;
     text-align: center;
-    border-radius: 8px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
 }
 
 .input-file-royal {
     color: #d4af37;
     font-family: 'Playfair Display', serif;
+}
+
+.file-upload-wrapper:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-style: solid;
+    /* Devient pleine au survol */
+}
+
+/* Cacher l'input par défaut */
+.input-file-hidden {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* Styliser le LABEL comme un bouton élégant */
+.btn-royal-upload {
+    display: inline-block;
+    background: #d4af37;
+    /* Fond doré */
+    color: white;
+    padding: 12px 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    /* Bords ronds */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(212, 175, 55, 0.2);
+    margin-bottom: 15px;
+}
+
+.btn-royal-upload:hover {
+    background: #c39e31;
+    /* Un doré plus sombre */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(212, 175, 55, 0.3);
+}
+
+.btn-royal-upload i {
+    margin-right: 10px;
+    /* Espace pour l'icône plume */
+    font-size: 0.9rem;
+}
+
+.file-hint {
+    color: #8c7f66;
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+/* --- Bouton Effacer --- */
+.btn-clear-files {
+    display: block;
+    margin: 0 auto 15px auto;
+    background: transparent;
+    border: none;
+    color: #bf3f3f;
+    /* Un rouge élégant */
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-clear-files:hover {
+    color: #e05c5c;
+    text-decoration: underline;
+}
+
+/* --- Grille de Previews (Vignettes) --- */
+.file-previews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.preview-item {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.preview-item:hover {
+    transform: scale(1.1) rotate(3deg);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Recadre intelligemment l'image */
 }

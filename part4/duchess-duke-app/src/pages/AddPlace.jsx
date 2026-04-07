@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 export default function AddPlace() {
     const navigate = useNavigate();
     const [amenitiesList, setAmenitiesList] = useState([]);
-    const [selectedFiles, setSelectedFiles] = useState([]); // État pour les fichiers physiques
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [filePreviews, setFilePreviews] = useState([]);
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -29,7 +31,17 @@ export default function AddPlace() {
 
     // --- Gestion des fichiers ---
     const handleFileChange = (e) => {
-        setSelectedFiles([...e.target.files]); // On transforme la FileList en Array
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files);
+
+        // Générer des URLs temporaires pour l'affichage (previews)
+        const previews = files.map(file => URL.createObjectURL(file));
+        setFilePreviews(previews);
+    };
+
+    const clearFiles = () => {
+        setSelectedFiles([]);
+        setFilePreviews([]);
     };
 
     const handleAmenityChange = (amenityId) => {
@@ -96,6 +108,7 @@ export default function AddPlace() {
             setError(err.message || "The courier could not reach the server.");
         } finally {
             setLoading(false);
+            filePreviews.forEach(url => URL.revokeObjectURL(url));
         }
     };
 
@@ -115,17 +128,40 @@ export default function AddPlace() {
                     </section>
 
                     {/* --- NOUVELLE SECTION : IMAGES --- */}
-                    <section className="form-section">
+                    <section className="form-section file-upload-section">
                         <h3>Gallery & Portraits</h3>
                         <div className="file-upload-wrapper">
+                            {/* Le vrai bouton, caché visuellement mais cliquable */}
                             <input
-                                type="file"
-                                multiple
-                                accept="image/*"
+                                type="file" id="estateImages"
+                                multiple accept="image/*"
                                 onChange={handleFileChange}
-                                className="input-file-royal"
+                                className="input-file-hidden"
                             />
-                            <p className="file-hint">Select the most exquisite portraits of your estate.</p>
+                            {/* Notre bouton stylisé "Bridgerton" qui déclenche le vrai input */}
+                            <label htmlFor="estateImages" className="btn-royal-upload">
+                                <i className="fas fa-feather-alt"></i>
+                                {selectedFiles.length > 0 ? "Change Portraits" : "Select Portraits"}
+                            </label>
+
+                            {selectedFiles.length > 0 && (
+                                <button type="button" onClick={clearFiles} className="btn-clear-files">
+                                    <i className="fas fa-times"></i> Clear Selection
+                                </button>
+                            )}
+
+                            <p className="file-hint">Select the most exquisite portraits of your halls (multi-selection allowed).</p>
+
+                            {/* Zone de prévisualisation (Previews) */}
+                            {filePreviews.length > 0 && (
+                                <div className="file-previews-grid">
+                                    {filePreviews.map((url, index) => (
+                                        <div key={index} className="preview-item">
+                                            <img src={url} alt={`Preview ${index}`} />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </section>
 
