@@ -22,6 +22,9 @@ export default function SelectedPlace() {
     const [emailInput, setEmailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
     const [guests, setGuests] = useState(1);
+    const [reviewText, setReviewText] = useState("");
+    const [rating, setRating] = useState(5);
+    const [submitting, setSubmitting] = useState(false);
 
     // Utilisation du contexte (Remplace useAuth)
     const { isLoggedIn, login, user } = useContext(AuthContext);
@@ -101,6 +104,41 @@ export default function SelectedPlace() {
         return 'fa-check-circle'; // Icône par défaut
     };
 
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+
+        try {
+            const response = await fetch('/api/v1/reviews/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    place_id: id, // l'ID du manoir récupéré via useParams
+                    rating: rating,
+                    text: reviewText
+                }),
+            });
+
+            if (response.ok) {
+                const newReview = await response.json();
+                // Petite astuce : on ajoute la review localement pour qu'elle apparaisse de suite
+                setEstate({
+                    ...estate,
+                    reviews: [...(estate.reviews || []), { ...newReview, user_name: user.name }]
+                });
+                setReviewText(""); // On vide le champ
+                alert("Your scandal... ahem, review, has been published!");
+            }
+        } catch (err) {
+            console.error("Review Error:", err);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <div className="selected-place-page reveal-on-load">
             <div className="container">
@@ -160,8 +198,44 @@ export default function SelectedPlace() {
 
                         {/* --- SECTION DES REVIEWS (À AJOUTER) --- */}
                         <hr className="review-separator" />
+
                         <section className="reviews-section">
                             <h3 className="section-title">What the Ton is saying...</h3>
+
+                            {isLoggedIn ? (
+                                <div className="add-review-box">
+                                    <h4>Leave a Review</h4>
+                                    <form onSubmit={handleReviewSubmit}>
+                                        <div className="rating-selector">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <i
+                                                    key={star}
+                                                    className={`fa-star ${star <= rating ? 'fas' : 'far'}`}
+                                                    onClick={() => setRating(star)}
+                                                ></i>
+                                            ))}
+                                        </div>
+                                        <textarea
+                                            value={reviewText}
+                                            onChange={(e) => setReviewText(e.target.value)}
+                                            placeholder="Share your thoughts on this residence..."
+                                            required
+                                        />
+                                        <button type="submit" className="btn-gold-full" disabled={submitting}>
+                                            {submitting ? "Publishing..." : "Post Review"}
+                                        </button>
+                                    </form>
+                                </div>
+                            ) : (
+                                <div className="login-prompt-luxury">
+                                    <i className="fas fa-feather-alt"></i>
+                                    <p>
+                                        Dearest Guest, your thoughts are a rare prize.
+                                        <Link to="/login" className="gold-link"> Sign in </Link>
+                                        to share your experience with the Ton.
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="reviews-grid">
                                 {estate.reviews && estate.reviews.length > 0 ? (

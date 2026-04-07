@@ -1252,6 +1252,85 @@ select {
     padding-left: 0;
 }
 
+.add-review-box {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid var(--bridgerton-blue);
+    margin-bottom: 40px;
+    /* Espace pour séparer de la grille */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.add-review-box h4 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 15px;
+    color: var(--dark-text);
+}
+
+.rating-selector {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--regency-gold);
+    cursor: pointer;
+}
+
+.rating-selector i {
+    margin-right: 5px;
+    transition: transform 0.2s;
+}
+
+.rating-selector i:hover {
+    transform: scale(1.2);
+}
+
+.add-review-box textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 15px;
+    resize: none;
+}
+
+.login-prompt-luxury {
+    background: rgba(184, 157, 94, 0.05);
+    /* Un beige très léger doré */
+    border: 1px dashed var(--regency-gold);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-prompt-luxury i {
+    font-size: 1.5rem;
+    color: var(--regency-gold);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.login-prompt-luxury p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--dark-text);
+}
+
+.gold-link {
+    color: var(--regency-gold);
+    text-decoration: none;
+    font-weight: 700;
+    border-bottom: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.gold-link:hover {
+    border-bottom: 1px solid var(--regency-gold);
+}
+
 .reviews-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
