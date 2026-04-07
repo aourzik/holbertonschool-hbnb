@@ -1144,9 +1144,17 @@ select {
 .place-content-layout {
     display: grid;
     grid-template-columns: 1fr 380px;
-    /* COLONNE GAUCHE / COLONNE DROITE */
+    /* Gauche large, Droite fixe */
     gap: 70px;
     align-items: start;
+    /* INDISPENSABLE pour le sticky */
+    position: relative;
+}
+
+.place-main-info {
+    /* Cette colonne va devenir très longue avec les reviews */
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- COLONNE GAUCHE (INFOS) --- */
@@ -1219,26 +1227,78 @@ select {
     color: var(--regency-gold);
 }
 
-.review-item {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-top: 15px;
-    border: 1px solid #f0f0f0;
+/* --- SECTION REVIEWS --- */
+/* Un nom unique pour ne pas interférer avec les autres traits */
+.review-separator {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 40px 0;
 }
 
-.review-item strong {
+.reviews-section {
+    grid-column: 1 / -1;
+    width: 100%;
+    text-align: left;
+    margin-top: 20px;
+    padding-top: 0;
+    padding-left: 0;
+}
+
+/* On s'assure que le titre est bien collé à gauche */
+.reviews-section h3 {
+    text-align: left;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.review-card-detail {
+    background: #fdfaf6;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Style pour le message de Lady Whistledown quand c'est vide */
+.no-reviews {
+    text-align: left;
+    padding: 20px 0;
+    border-left: 3px solid var(--regency-gold);
+    padding-left: 20px;
+    background: #fafafa;
+}
+
+.no-reviews cite {
     display: block;
-    margin-bottom: 8px;
-    color: var(--dark-text);
+    margin-top: 10px;
+    color: var(--regency-gold);
+    font-weight: bold;
+}
+
+/* --- AJUSTEMENTS POUR LE RESTE (Pour être sûr) --- */
+.description-section,
+.amenities-section {
+    text-align: left;
 }
 
 /* --- COLONNE DROITE (BOOKING CARD) --- */
+
 .booking-sidebar {
     position: sticky;
     top: 120px;
-    /* Reste en haut au scroll */
+    /* Aligné sous ta navbar */
     z-index: 10;
+    height: fit-content;
+    /* Obligatoire pour le sticky en grid/flex */
 }
 
 .booking-card {

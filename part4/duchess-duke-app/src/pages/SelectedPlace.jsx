@@ -98,7 +98,9 @@ export default function SelectedPlace() {
 
                 <header className="place-header-detail">
                     <h1 className="title-luxury">{estate.name}</h1>
-                    <p className="location-detail">London, UK • ★ 4.9 (128 reviews)</p>
+                    <p className="location-detail">
+                        London, UK • ★ 4.9 ({estate.reviews ? estate.reviews.length : 0} reviews)
+                    </p>
                 </header>
 
                 <div className="carousel-container">
@@ -140,6 +142,36 @@ export default function SelectedPlace() {
                                 )) || <p>Standard Royal Services</p>}
                             </div>
                         </div>
+
+                        {/* --- SECTION DES REVIEWS (À AJOUTER) --- */}
+                        <hr className="review-separator" />
+                        <section className="reviews-section">
+                            <h3 className="section-title">What the Ton is saying...</h3>
+
+                            <div className="reviews-grid">
+                                {estate.reviews && estate.reviews.length > 0 ? (
+                                    estate.reviews.map((rev) => (
+                                        <div key={rev.id} className="review-card-detail">
+                                            <div className="review-card-header">
+                                                <div className="user-info">
+                                                    {/* Nom de l'utilisateur qui a laissé l'avis */}
+                                                    <span className="user-name">{rev.user_name || "A Member of the Ton"}</span>
+                                                    <span className="stars">
+                                                        {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <p className="review-text-detail">"{rev.text}"</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="no-reviews">
+                                        <p>"Silence is a rare commodity in London, yet this estate seems to have found it. No scandals reported here... yet."</p>
+                                        <cite>— Lady Whistledown</cite>
+                                    </div>
+                                )}
+                            </div>
+                        </section>
                     </div>
 
                     <aside className="booking-sidebar">
@@ -181,6 +213,9 @@ export default function SelectedPlace() {
                     </aside>
                 </div>
             </div>
+
+
+
 
             {/* MODALS (Confirmation & Login) */}
             {showModal && (
