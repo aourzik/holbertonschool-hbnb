@@ -1959,6 +1959,53 @@ select {
     margin-bottom: 20px;
 }
 
+.manage-estate-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+}
+
+.manage-estate-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.manage-estate-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.manage-estate-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-view-mini {
+    background: white;
+    border: 1px solid #d4af37;
+    border-radius: 15px;
+    color: #d4af37;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.btn-delete-mini {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: 15px;
+    color: #b88585;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
 .add-estate-btn {
     display: inline-flex;
     align-items: center;

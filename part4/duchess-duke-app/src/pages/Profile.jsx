@@ -6,12 +6,13 @@ export default function Profile() {
     const navigate = useNavigate();
     const { user, logout, isLoggedIn } = useContext(AuthContext);
 
-    // 1. On crée un état local pour stocker les reviews qu'on va récupérer
     const [userReviews, setUserReviews] = useState([]);
+    const [myEstates, setMyEstates] = useState([]); // --- ÉTAT POUR TES MANOIRS ---
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (isLoggedIn) {
+            // 1. On récupère les infos de l'utilisateur (pour les reviews)
             fetch('/api/v1/users/me', {
                 method: 'GET',
                 headers: {
@@ -19,26 +20,55 @@ export default function Profile() {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
-                .then(res => {
-                    if (!res.ok) throw new Error("Erreur de récupération");
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-                    // --- CRUCIAL : On enregistre les reviews reçues dans notre état ---
-                    if (data.reviews) {
-                        setUserReviews(data.reviews);
-                    }
+                    if (data.reviews) setUserReviews(data.reviews);
+                })
+                .catch(err => console.error("Erreur Profil:", err));
+
+            // 2. --- NOUVEAU : On récupère tous les manoirs pour filtrer les nôtres ---
+            fetch('/api/v1/places/')
+                .then(res => res.json())
+                .then(allPlaces => {
+                    const owned = allPlaces.filter(p => p.owner.id === user.id);
+                    setMyEstates(owned);
                     setLoading(false);
                 })
                 .catch(err => {
-                    console.error("Erreur Profil:", err);
+                    console.error("Erreur Places:", err);
                     setLoading(false);
                 });
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, user.id]);
 
-    // 2. Supprime la ligne : const userReviews = user?.reviews || []; 
-    // (Elle ne sert plus car on utilise maintenant l'état userReviews défini au dessus)
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
+    // --- 3. FONCTION DE SUPPRESSION ---
+    const handleDeleteEstate = async (id, title) => {
+        const confirmWithdraw = window.confirm(`Dearest ${user.name}, are you certain you wish to withdraw "${title}" from the Ton's registry? This scandal cannot be undone.`);
+
+        if (confirmWithdraw) {
+            try {
+                const response = await fetch(`/api/v1/places/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    // On met à jour la liste localement
+                    setMyEstates(myEstates.filter(e => e.id !== id));
+                    alert("The archives have been updated successfully.");
+                }
+            } catch (err) {
+                alert("The courier failed to deliver the request.");
+            }
+        }
+    };
 
     if (!isLoggedIn) {
         return (
@@ -50,41 +80,33 @@ export default function Profile() {
         );
     }
 
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
-
     return (
         <div className="selected-place-page">
             <div className="profile-wrapper reveal-on-load">
 
-                {/* --- SIDEBAR GAUCHE (INFOS) --- */}
+                {/* --- SIDEBAR GAUCHE --- */}
                 <aside className="profile-sidebar">
                     <div className="profile-avatar-container">
                         <img src="/images/violette.jpg" alt="User Avatar" className="profile-avatar" />
                         <span className="role-badge">{user?.role || "Member"}</span>
                     </div>
-
                     <h2 className="profile-name">{user?.name}</h2>
                     <p className="subtitle" style={{ marginBottom: '10px' }}>{user?.email}</p>
 
-                    {/* --- ACTION DE CRÉATION (À AJOUTER) --- */}
                     <div className="profile-actions-luxury">
                         <h3 className="section-title">Manage Your Heritage</h3>
-                        <p>Do you possess a residence worthy of the Ton's attention?</p>
+                        <p>Register a residence worthy of the Ton.</p>
                         <Link to="/add-place" className="btn-gold-full add-estate-btn">
-                            <i className="fas fa-plus"></i> Register a New Estate
+                            <i className="fas fa-plus"></i> Register Estate
                         </Link>
                     </div>
 
                     <div className="profile-stats">
                         <div>
-                            <span className="stat-value">0</span>
-                            <span className="stat-label">Bookings</span>
+                            <span className="stat-value">{myEstates.length}</span>
+                            <span className="stat-label">Estates</span>
                         </div>
                         <div>
-                            {/* On affiche le nombre réel de reviews trouvées */}
                             <span className="stat-value">{userReviews.length}</span>
                             <span className="stat-label">Reviews</span>
                         </div>
@@ -97,19 +119,46 @@ export default function Profile() {
                     </div>
                 </aside>
 
-                {/* --- CONTENU DROITE (ACTIVITÉ) --- */}
+                {/* --- CONTENU DROITE --- */}
                 <main className="profile-main-content">
                     <h2 className="section-title">Your Royal Ledger</h2>
 
+                    {/* --- NOUVELLE SECTION : MES BIENS --- */}
+                    <div className="activity-section" style={{ marginBottom: '40px' }}>
+                        <h3 className="whistledown-quote" style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '20px' }}>
+                            Your Prestigious Properties
+                        </h3>
+
+                        <div className="my-estates-list">
+                            {myEstates.length > 0 ? (
+                                myEstates.map(estate => (
+                                    <div key={estate.id} className="manage-estate-item">
+                                        <div className="manage-estate-info">
+                                            <img src={estate.image || "/images/estate1.jpg"} alt="Miniature" />
+                                            <div>
+                                                <h4>{estate.title}</h4>
+                                                <p>£ {estate.price.toLocaleString()} / night</p>
+                                            </div>
+                                        </div>
+                                        <div className="manage-estate-btns">
+                                            <button onClick={() => navigate(`/places/${estate.id}`)} className="btn-view-mini">View</button>
+                                            <button onClick={() => handleDeleteEstate(estate.id, estate.title)} className="btn-delete-mini">Withdraw</button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p style={{ fontStyle: 'italic', color: '#888' }}>You currently own no estates in the registry.</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* --- SECTION REVIEWS --- */}
                     <div className="activity-section">
                         <h3 className="whistledown-quote" style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '20px' }}>
                             Your Latest Gossip & Reviews
                         </h3>
-
                         <div className="activity-list">
-                            {loading ? (
-                                <p style={{ textAlign: 'center', fontStyle: 'italic' }}>Loading your royal records...</p>
-                            ) : userReviews.length > 0 ? (
+                            {userReviews.length > 0 ? (
                                 userReviews.map((rev) => (
                                     <div key={rev.id} className="review-item" style={{ marginBottom: '20px' }}>
                                         <div className="review-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -126,27 +175,11 @@ export default function Profile() {
                                     </div>
                                 ))
                             ) : (
-                                /* Si aucune review n'est trouvée */
-                                <div className="review-item" style={{ textAlign: 'center', padding: '20px' }}>
-                                    <p className="review-text">
-                                        "It appears your social calendar is currently empty, My Lord.
-                                        The season is young, and many estates await your presence."
-                                    </p>
-                                    <cite style={{ display: 'block', textAlign: 'right', marginTop: '10px', color: 'var(--regency-gold)' }}>
-                                        — Lady Whistledown
-                                    </cite>
-                                </div>
+                                <p style={{ fontStyle: 'italic', color: '#888' }}>No social gossip recorded yet.</p>
                             )}
-                        </div>
-
-                        <div style={{ marginTop: '30px', textAlign: 'center' }}>
-                            <button className="btn-reserve" onClick={() => navigate('/places')} style={{ width: 'auto', padding: '10px 40px' }}>
-                                Browse More Estates
-                            </button>
                         </div>
                     </div>
                 </main>
-
             </div>
         </div>
     );

@@ -127,6 +127,12 @@ class PlaceResource(Resource):
         if not is_admin and str(place.owner.id) != str(current_user_id):
             return {"Error": "Unauthorized action"}, 403
         try:
+            for img in place.images:
+                # On construit le chemin vers le dossier public de ton app
+                file_path = os.path.join('duchess-duke-app', 'public', img.url.lstrip('/'))
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    print(f"Portrait {img.url} removed from archives.")
             facade.delete_place(place_id)
             return {"message": "Place deleted successfully"}, 200
         except ValueError as e:
