@@ -21,6 +21,7 @@ export default function SelectedPlace() {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [emailInput, setEmailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
+    const [guests, setGuests] = useState(1);
 
     // Utilisation du contexte (Remplace useAuth)
     const { isLoggedIn, login, user } = useContext(AuthContext);
@@ -89,6 +90,17 @@ export default function SelectedPlace() {
     if (loading) return <div className="container" style={{ padding: '100px', textAlign: 'center' }}>Loading Royal Details...</div>;
     if (!estate) return <div className="container" style={{ padding: '100px' }}>Estate not found in archives...</div>;
 
+    const getAmenityIcon = (name) => {
+        const n = name.toLowerCase();
+        if (n.includes('wi-fi') || n.includes('wifi')) return 'fa-wifi';
+        if (n.includes('pool') || n.includes('piscine')) return 'fa-swimming-pool';
+        if (n.includes('garden') || n.includes('jardin')) return 'fa-leaf';
+        if (n.includes('library') || n.includes('bibliothèque')) return 'fa-book';
+        if (n.includes('ballroom') || n.includes('bal')) return 'fa-music';
+        if (n.includes('stables') || n.includes('écuries')) return 'fa-horse';
+        return 'fa-check-circle'; // Icône par défaut
+    };
+
     return (
         <div className="selected-place-page reveal-on-load">
             <div className="container">
@@ -138,7 +150,10 @@ export default function SelectedPlace() {
                             <h3>What this place offers</h3>
                             <div className="amenities-grid">
                                 {estate.amenities?.map(a => (
-                                    <div key={a.id} className="amenity-item"><i className="fas fa-check"></i> {a.name}</div>
+                                    <div key={a.id} className="amenity-item">
+                                        <i className={`fas ${getAmenityIcon(a.name)}`}></i>
+                                        <span>{a.name}</span>
+                                    </div>
                                 )) || <p>Standard Royal Services</p>}
                             </div>
                         </div>
@@ -190,6 +205,16 @@ export default function SelectedPlace() {
                                     <input type="date" min={checkIn || today} value={checkOut} onChange={(e) => setCheckOut(e.target.value)} />
                                 </div>
                             </div>
+                            <div className="input-group">
+                                <label>Guests</label>
+                                <select value={guests} onChange={(e) => setGuests(e.target.value)}>
+                                    {[1, 2, 3, 4, 5, 6].map(num => (
+                                        <option key={num} value={num}>
+                                            {num} {num > 1 ? 'Guests' : 'Guest'}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
                             {totalDays > 0 && (
                                 <div className="price-summary-box">
@@ -218,26 +243,76 @@ export default function SelectedPlace() {
 
 
             {/* MODALS (Confirmation & Login) */}
-            {showModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h2>Reservation Sent</h2>
-                        <p>Your request for <strong>{estate.name}</strong> has been received.</p>
-                        <button className="btn-gold-full" onClick={() => setShowModal(false)}>Close</button>
-                    </div>
-                </div>
-            )}
-
             {showLoginModal && (
                 <div className="modal-overlay">
                     <div className="modal-content login-modal">
                         <button className="close-modal" onClick={() => setShowLoginModal(false)}>&times;</button>
+
+                        <div className="login-header-icon">
+                            <img src="/images/logo.png" alt="Logo" className="mini-logo" />
+                        </div>
+
                         <h2 className="title-luxury">Sign in to the Ton</h2>
+                        <p className="subtitle">Enter your credentials to access the exclusive listings.</p>
+
                         <form className="login-form" onSubmit={handleLogin}>
-                            <input type="email" placeholder="Email" required value={emailInput} onChange={(e) => setEmailInput(e.target.value)} />
-                            <input type="password" placeholder="Password" required value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
-                            <button type="submit" className="btn-gold-full">Sign In</button>
+                            <div className="input-with-label">
+                                <label>Your Registry Email</label>
+                                <div className="input-wrapper">
+                                    <i className="fas fa-envelope"></i>
+                                    <input type="email" placeholder="email@domain.com" required value={emailInput} onChange={(e) => setEmailInput(e.target.value)} />
+                                </div>
+                            </div>
+
+                            <div className="input-with-label">
+                                <label>Security Cipher</label>
+                                <div className="input-wrapper">
+                                    <i className="fas fa-lock"></i>
+                                    <input type="password" placeholder="••••••••" required value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
+                                </div>
+                            </div>
+
+                            <button type="submit" className="btn-gold-full">Sign In & Verify Credentials</button>
                         </form>
+
+                        <div className="modal-footer">
+                            <p>Not yet registered? <a href="/signup">Apply for Membership</a></p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content confirmation-modal">
+                        <div className="success-icon-wrapper">
+                            <i className="fas fa-envelope-open-text"></i>
+                        </div>
+                        <h2 className="title-luxury">A Royal Invitation Sent</h2>
+                        <p className="subtitle">Your request has been dispatched by our fastest courier.</p>
+
+                        <div className="reservation-summary">
+                            <div className="summary-item">
+                                <span>Estate</span>
+                                <strong>{estate.name}</strong>
+                            </div>
+                            <div className="summary-item">
+                                <span>Stay Duration</span>
+                                <strong>{totalDays} Days</strong>
+                            </div>
+                            <div className="summary-item">
+                                <span>Total Investment</span>
+                                <strong>£ {totalPrice.toLocaleString()}</strong>
+                            </div>
+                        </div>
+
+                        <p className="modal-note">
+                            The host will review your credentials and respond shortly via the usual channels.
+                        </p>
+
+                        <button className="btn-gold-full" onClick={() => setShowModal(false)}>
+                            Return to the Ton
+                        </button>
                     </div>
                 </div>
             )}
