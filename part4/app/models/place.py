@@ -29,6 +29,7 @@ class Place(BaseModel):
         lazy='subquery',
         back_populates='places'
     )
+    images = db.relationship('PlaceImage', back_populates='place', cascade='all, delete-orphan')
 
     @staticmethod
     def _validate_title(title):
@@ -156,6 +157,8 @@ class Place(BaseModel):
 
     def to_dict(self):
         data = super().to_dict()
+        data["images"] = [img.url for img in self.images]
+        data["image"] = self.images[0].url if self.images else "/images/default.jpg"
         data["is_available"] = self.is_available
         data.pop('user_id', None)
         if self.owner:
@@ -163,3 +166,12 @@ class Place(BaseModel):
             data["amenities"] = [amenity.to_dict() for amenity in self.amenities]
             data["reviews"] = [review.to_dict() for review in self.reviews]
         return data
+
+class PlaceImage(BaseModel):
+    __tablename__ = 'place_images'
+    
+    url = db.Column(db.String(255), nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    
+
+    place = db.relationship('Place', back_populates='images')

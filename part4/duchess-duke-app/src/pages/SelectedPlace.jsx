@@ -42,7 +42,8 @@ export default function SelectedPlace() {
                 setEstate({
                     ...data,
                     name: data.title,
-                    price: data.price
+                    price: data.price,
+                    images: data.images || []
                 });
             } catch (error) {
                 console.error("Fetch error:", error);
@@ -67,13 +68,6 @@ export default function SelectedPlace() {
     const totalDays = calculateTotal();
     const rawPrice = estate ? Number(estate.price) : 0;
     const totalPrice = Math.round(totalDays * (rawPrice / 30));
-
-    const images = [
-        "/images/estate1.jpg",
-        "/images/manoir1.jpg",
-        "/images/manoir2.jpg",
-        "/images/manoir3.jpg"
-    ];
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -154,17 +148,39 @@ export default function SelectedPlace() {
                 </header>
 
                 <div className="carousel-container">
-                    <Swiper
-                        modules={[Navigation, Pagination, Autoplay]}
-                        spaceBetween={10} slidesPerView={1} navigation pagination={{ clickable: true }}
-                        autoplay={{ delay: 3500 }} loop={true}
-                    >
-                        {images.map((img, index) => (
-                            <SwiperSlide key={index}>
-                                <img src={img} alt={`View ${index}`} className="carousel-img" />
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
+                    {/* On ne rend le Swiper QUE si estate existe pour éviter les bugs d'initialisation */}
+                    {estate && (
+                        <Swiper
+                            modules={[Navigation, Pagination, Autoplay]}
+                            spaceBetween={10}
+                            slidesPerView={1}
+                            navigation
+                            pagination={{ clickable: true }}
+                            autoplay={{ delay: 3500 }}
+                            // On simplifie le loop : si plus d'une image, on loop
+                            loop={(estate.images?.length > 1)}
+                            // Important pour que Swiper se mette à jour quand les images arrivent
+                            observer={true}
+                            observeParents={true}
+                        >
+                            {estate.images && estate.images.length > 0 ? (
+                                estate.images.map((img, index) => (
+                                    <SwiperSlide key={index}>
+                                        <img
+                                            src={img}
+                                            alt={`${estate.name} - View ${index}`}
+                                            className="carousel-img"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                    </SwiperSlide>
+                                ))
+                            ) : (
+                                <SwiperSlide>
+                                    <img src="/images/estate1.jpg" alt="Default" className="carousel-img" />
+                                </SwiperSlide>
+                            )}
+                        </Swiper>
+                    )}
                 </div>
 
                 <div className="place-content-layout">

@@ -47,10 +47,12 @@ export default function Places() {
                     ...item,
                     name: item.title || "Sans nom",
                     coordinates: [item.latitude || 51.505, item.longitude || -0.09],
+                    image: item.image || "/images/estate1.jpg",
+                    isAvailable: item.is_available !== undefined ? item.is_available : true,
                     price: Number(item.price) || 0,
                     // ON UTILISE LA DONNÉE RÉELLE DE L'API ICI
                     isAvailable: item.is_available !== undefined ? item.is_available : true,
-                    image: "/images/estate1.jpg"
+
                 }));
 
                 setEstates(formattedData);
