@@ -3,19 +3,19 @@ import { useNavigate } from 'react-router-dom';
 
 export default function AddPlace() {
     const navigate = useNavigate();
-    const [amenitiesList, setAmenitiesList] = useState([]); // Liste venant du serveur
+    const [amenitiesList, setAmenitiesList] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]); // État pour les fichiers physiques
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         price: '',
         latitude: '',
         longitude: '',
-        selectedAmenities: [] // IDs des cases cochées
+        selectedAmenities: []
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // --- 1. Charger les Amenities disponibles au montage ---
     useEffect(() => {
         fetch('/api/v1/amenities/')
             .then(res => res.json())
@@ -27,7 +27,11 @@ export default function AddPlace() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // --- 2. Gérer les cases à cocher ---
+    // --- Gestion des fichiers ---
+    const handleFileChange = (e) => {
+        setSelectedFiles([...e.target.files]); // On transforme la FileList en Array
+    };
+
     const handleAmenityChange = (amenityId) => {
         const updated = formData.selectedAmenities.includes(amenityId)
             ? formData.selectedAmenities.filter(id => id !== amenityId)
@@ -40,16 +44,38 @@ export default function AddPlace() {
         setLoading(true);
         setError('');
 
-        const payload = {
-            title: formData.title,
-            description: formData.description,
-            price: parseFloat(formData.price),
-            latitude: parseFloat(formData.latitude),
-            longitude: parseFloat(formData.longitude),
-            amenities: formData.selectedAmenities
-        };
-
         try {
+            let uploadedUrls = [];
+
+            // --- ÉTAPE 1 : Upload des images si présentes ---
+            if (selectedFiles.length > 0) {
+                const imgFormData = new FormData();
+                selectedFiles.forEach(file => {
+                    imgFormData.append('images', file);
+                });
+
+                const imgResponse = await fetch('/api/v1/places/upload-images', {
+                    method: 'POST',
+                    // Note : Pas de header Content-Type ici, le navigateur s'en occupe pour FormData
+                    body: imgFormData
+                });
+
+                if (!imgResponse.ok) throw new Error("Failed to upload images");
+                const imgData = await imgResponse.json();
+                uploadedUrls = imgData.urls; // On récupère les URLs générées par Flask
+            }
+
+            // --- ÉTAPE 2 : Envoi du manoir avec les URLs d'images ---
+            const payload = {
+                title: formData.title,
+                description: formData.description,
+                price: parseFloat(formData.price),
+                latitude: parseFloat(formData.latitude),
+                longitude: parseFloat(formData.longitude),
+                amenities: formData.selectedAmenities,
+                images: uploadedUrls // On envoie les chemins /images/uploads/...
+            };
+
             const response = await fetch('/api/v1/places/', {
                 method: 'POST',
                 headers: {
@@ -61,13 +87,13 @@ export default function AddPlace() {
 
             if (response.ok) {
                 const data = await response.json();
-                navigate(`/places/${data.id}`); // Redirection vers le nouveau manoir !
+                navigate(`/estate/${data.id}`); // Redirection vers ton manoir
             } else {
                 const errData = await response.json();
                 setError(errData.Error || "Failed to register estate");
             }
         } catch (err) {
-            setError("The courier could not reach the server.");
+            setError(err.message || "The courier could not reach the server.");
         } finally {
             setLoading(false);
         }
@@ -86,6 +112,21 @@ export default function AddPlace() {
                         <h3>General Details</h3>
                         <input type="text" name="title" placeholder="Estate Name (e.g. Aubrey Hall)" required onChange={handleChange} />
                         <textarea name="description" placeholder="Describe the grandeur of your halls..." required onChange={handleChange} />
+                    </section>
+
+                    {/* --- NOUVELLE SECTION : IMAGES --- */}
+                    <section className="form-section">
+                        <h3>Gallery & Portraits</h3>
+                        <div className="file-upload-wrapper">
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="input-file-royal"
+                            />
+                            <p className="file-hint">Select the most exquisite portraits of your estate.</p>
+                        </div>
                     </section>
 
                     <section className="form-section">

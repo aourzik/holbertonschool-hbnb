@@ -1,8 +1,17 @@
+import os
+import uuid
+from flask import request, jsonify
+from werkzeug.utils import secure_filename
+from app import db
+from app.models.place import Place, PlaceImage
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('places', description='Place operations')
+
+upload_parser = api.parser()
+upload_parser.add_argument('images', location='files', type='file', action='append', required=True, help='Images files')
 
 amenity_model = api.model('PlaceAmenity', {
     'id': fields.String(description='Amenity ID'),
@@ -23,7 +32,8 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=False, description='ID of the owner'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's"),
+    'images': fields.List(fields.String, description="List of image URLs")
 })
 
 update_place_model = api.model('UpdatePlace', {
@@ -132,3 +142,38 @@ class PlaceReviewList(Resource):
         if not place:
             return {"Error": "Place not found"}, 404
         return [x.to_dict() for x in place.reviews], 200
+    
+
+@api.route('/upload-images')
+class PlaceImageUpload(Resource):
+    @api.expect(upload_parser)
+    @api.response(201, 'Images uploaded successfully')
+    @api.response(400, 'No images provided')
+    def post(self):
+        """Upload images for a place before creation"""
+        if 'images' not in request.files:
+            return {"Error": "No images provided"}, 400
+        
+        files = request.files.getlist('images')
+        uploaded_urls = []
+        
+        # Chemin vers le dossier public de ton app React
+        # Note : assure-toi que ce chemin est correct depuis la racine où tu lances Flask
+        upload_path = os.path.join('duchess-duke-app', 'public', 'images', 'uploads')
+        
+        if not os.path.exists(upload_path):
+            os.makedirs(upload_path)
+
+        for file in files:
+            if file and file.filename != '':
+                ext = os.path.splitext(file.filename)[1]
+                new_filename = f"{uuid.uuid4()}{ext}"
+                
+                # Sauvegarde physique
+                file.save(os.path.join(upload_path, new_filename))
+                
+                # URL pour React
+                uploaded_urls.append(f"/images/uploads/{new_filename}")
+
+        return {"urls": uploaded_urls}, 201
+

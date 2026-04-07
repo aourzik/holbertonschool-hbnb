@@ -9,6 +9,7 @@ from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.user import User
 from app.models.review import Review
+from app.models.place import Place, PlaceImage
 
 class HBnBFacade:
     def __init__(self):
@@ -72,12 +73,17 @@ class HBnBFacade:
         if owner_id is None:
             raise ValueError("An owner is required")
         amenities_ids = place_data.pop("amenities", [])
+        image_urls = place_data.pop("images", [])
 
         user = self.user_repo.get(owner_id)
         if not user:
             raise ValueError("Owner not found")
 
         place = Place(user_id=owner_id, **place_data)
+
+        for url in image_urls:
+            new_img = PlaceImage(url=url)
+            place.images.append(new_img)
 
         for amenity_id in amenities_ids:
             amenity = self.amenity_repo.get(amenity_id)

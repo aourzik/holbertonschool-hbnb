@@ -1,8 +1,15 @@
+import os
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+
+UPLOAD_FOLDER = 'duchess-duke-app/public/images/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()

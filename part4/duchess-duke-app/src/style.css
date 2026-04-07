@@ -2194,3 +2194,17 @@ select {
     /* Pour ne pas qu'il prenne 100% */
     margin-bottom: 0;
 }
+
+.file-upload-wrapper {
+    background: rgba(212, 175, 55, 0.05);
+    /* Un léger fond doré */
+    border: 1px dashed #d4af37;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.input-file-royal {
+    color: #d4af37;
+    font-family: 'Playfair Display', serif;
+}
