@@ -133,6 +133,39 @@ export default function SelectedPlace() {
         }
     };
 
+    // --- 4. LOGIQUE DE RÉSERVATION ---
+    const handleBookingSubmit = async () => {
+        if (!checkIn || !checkOut) {
+            alert("Please select your stay dates, Darling.");
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/v1/bookings/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Ton JWT
+                },
+                body: JSON.stringify({
+                    place_id: id,
+                    start_date: checkIn,
+                    end_date: checkOut
+                }),
+            });
+
+            if (response.ok) {
+                setShowModal(true); // Ouvre la modale de succès
+            } else {
+                const errorData = await response.json();
+                alert(`Scandal! ${errorData.message || "The booking failed."}`);
+            }
+        } catch (err) {
+            console.error("Booking Error:", err);
+            alert("The courier was lost. Please try again.");
+        }
+    };
+
     return (
         <div className="selected-place-page reveal-on-load">
             <div className="container">
@@ -316,7 +349,11 @@ export default function SelectedPlace() {
                             )}
 
                             {isLoggedIn ? (
-                                <button className="btn-book-now" disabled={totalDays <= 0} onClick={() => setShowModal(true)}>
+                                <button
+                                    className="btn-book-now"
+                                    disabled={totalDays <= 0}
+                                    onClick={handleBookingSubmit}
+                                >
                                     Reserve this Estate
                                 </button>
                             ) : (

@@ -74,7 +74,7 @@ export default function AddPlace() {
 
                 if (!imgResponse.ok) throw new Error("Failed to upload images");
                 const imgData = await imgResponse.json();
-                uploadedUrls = imgData.urls; // On récupère les URLs générées par Flask
+                uploadedUrls = imgData.urls;
             }
 
             // --- ÉTAPE 2 : Envoi du manoir avec les URLs d'images ---
@@ -85,7 +85,7 @@ export default function AddPlace() {
                 latitude: parseFloat(formData.latitude),
                 longitude: parseFloat(formData.longitude),
                 amenities: formData.selectedAmenities,
-                images: uploadedUrls // On envoie les chemins /images/uploads/...
+                images: uploadedUrls
             };
 
             const response = await fetch('/api/v1/places/', {

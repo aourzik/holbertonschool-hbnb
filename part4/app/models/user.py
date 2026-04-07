@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import re
 from app import db, bcrypt
 from .base_model import BaseModel, current_time
@@ -101,3 +100,25 @@ class User(BaseModel):
         if "is_admin" in data:
             self.is_admin = self._validate_is_admin(data["is_admin"])
         self.updated_at = current_time()
+
+class Booking(BaseModel):
+    __tablename__ = 'bookings'
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    
+    # Pour que l'utilisateur puisse voir ses réservations
+    user = db.relationship('User', backref='bookings') 
+    place = db.relationship('Place', backref='bookings')
+
+    def to_dict(self):
+        """Transforme l'objet Booking en dictionnaire pour l'API JSON"""
+        return {
+            "id": self.id,
+            "start_date": self.start_date.strftime('%Y-%m-%d'), # Formate la date en texte
+            "end_date": self.end_date.strftime('%Y-%m-%d'),
+            "place_id": self.place_id,
+            "place_name": self.place.title if self.place else "Unknown Estate", # Très utile pour le Profil !
+            "user_id": self.user_id
+        }

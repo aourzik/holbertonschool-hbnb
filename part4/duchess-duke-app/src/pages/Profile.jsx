@@ -8,6 +8,7 @@ export default function Profile() {
 
     const [userReviews, setUserReviews] = useState([]);
     const [myEstates, setMyEstates] = useState([]); // --- ÉTAT POUR TES MANOIRS ---
+    const [userBookings, setUserBookings] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -26,16 +27,32 @@ export default function Profile() {
                 })
                 .catch(err => console.error("Erreur Profil:", err));
 
-            // 2. --- NOUVEAU : On récupère tous les manoirs pour filtrer les nôtres ---
+            // 2. On récupère les manoirs pour filtrer les nôtres
             fetch('/api/v1/places/')
                 .then(res => res.json())
                 .then(allPlaces => {
                     const owned = allPlaces.filter(p => p.owner.id === user.id);
                     setMyEstates(owned);
+                    // On ne met pas setLoading(false) ici car on attend le 3ème fetch
+                })
+                .catch(err => console.error("Erreur Places:", err));
+
+            // 3. --- NOUVEAU : RÉCUPÉRATION DES RÉSERVATIONS ---
+            fetch('/api/v1/bookings/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+                .then(res => res.json())
+                .then(async (data) => {
+                    const bookings = Array.isArray(data) ? data : [];
+                    setUserBookings(bookings);
                     setLoading(false);
                 })
                 .catch(err => {
-                    console.error("Erreur Places:", err);
+                    console.error("Erreur Bookings:", err);
                     setLoading(false);
                 });
         }
@@ -103,7 +120,7 @@ export default function Profile() {
 
                     <div className="profile-stats">
                         <div>
-                            <span className="stat-value">{myEstates.length}</span>
+                            <span className="stat-value">{userBookings.length}</span>
                             <span className="stat-label">Estates</span>
                         </div>
                         <div>
@@ -122,6 +139,30 @@ export default function Profile() {
                 {/* --- CONTENU DROITE --- */}
                 <main className="profile-main-content">
                     <h2 className="section-title">Your Royal Ledger</h2>
+
+                    {/* --- SECTION : MES RÉSERVATIONS (SÉJOURS PRÉVUS) --- */}
+                    <div className="activity-section" style={{ marginBottom: '40px' }}>
+                        <h3 className="whistledown-quote" style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '20px' }}>
+                            Your Upcoming Stays
+                        </h3>
+                        <div className="my-estates-list">
+                            {userBookings.length > 0 ? (
+                                userBookings.map(booking => (
+                                    <div key={booking.id} className="manage-estate-item">
+                                        <div className="manage-estate-info">
+                                            <i className="fas fa-calendar-alt" style={{ color: 'var(--regency-gold)', fontSize: '1.5rem' }}></i>
+                                            <div>
+                                                <h4>{booking.place_name}</h4>
+                                                <p>From {booking.start_date} to {booking.end_date}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p style={{ fontStyle: 'italic', color: '#888' }}>No social travels planned yet.</p>
+                            )}
+                        </div>
+                    </div>
 
                     {/* --- NOUVELLE SECTION : MES BIENS --- */}
                     <div className="activity-section" style={{ marginBottom: '40px' }}>

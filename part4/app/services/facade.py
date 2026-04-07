@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
+from datetime import datetime
+
 from app.services.repositories import (
     UserRepository,
     PlaceRepository,
     ReviewRepository,
     AmenityRepository,
 )
+
+from app import db
 from app.models.amenity import Amenity
-from app.models.place import Place
-from app.models.user import User
+from app.models.user import User, Booking
 from app.models.review import Review
 from app.models.place import Place, PlaceImage
+
 
 class HBnBFacade:
     def __init__(self):
@@ -254,3 +258,22 @@ class HBnBFacade:
             place.remove_review(review)
 
         self.review_repo.delete(review_id)
+
+################ BOOKING ##################### 
+
+    def create_booking(self, booking_data):
+        # On crée l'objet directement (plus besoin du "from... import" à l'intérieur)
+        if isinstance(booking_data['start_date'], str):
+            booking_data['start_date'] = datetime.strptime(booking_data['start_date'], '%Y-%m-%d').date()
+        if isinstance(booking_data['end_date'], str):
+            booking_data['end_date'] = datetime.strptime(booking_data['end_date'], '%Y-%m-%d').date()
+        booking = Booking(**booking_data)
+        
+        # On utilise db qu'on a importé en haut
+        db.session.add(booking)
+        db.session.commit()
+        return booking
+
+    def get_bookings_by_user(self, user_id):
+        # On utilise le modèle Booking importé en haut
+        return Booking.query.filter_by(user_id=user_id).all()
