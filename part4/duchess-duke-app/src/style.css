@@ -1939,6 +1939,50 @@ select {
     color: #999;
 }
 
+.profile-actions-luxury {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0e6d2;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.profile-actions-luxury .section-title {
+    margin-bottom: 10px;
+}
+
+.profile-actions-luxury p {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.add-estate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+    padding: 12px 25px;
+    text-decoration: none !important;
+    color: white;
+}
+
+/* Optionnel : Une règle globale pour tous tes boutons-liens */
+.btn-gold-full,
+.btn-primary,
+.btn-reserve {
+    text-decoration: none;
+}
+
+/* On vérifie aussi l'état au survol pour être sûr */
+.add-estate-btn:hover {
+    text-decoration: none;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(184, 150, 87, 0.3);
+}
+
 /* Cartes de réservations */
 .section-title {
     font-family: 'Playfair Display', serif;
@@ -2107,4 +2151,46 @@ select {
     margin-bottom: 20px;
     border-left: 4px solid #c0392b;
     font-style: italic;
+}
+
+/* --- ADD PLACE PAGE --- */
+.container-small {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+    margin-bottom: 40px;
+}
+
+.form-section h3 {
+    font-size: 1.2rem;
+    color: var(--regency-gold);
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.amenities-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.amenity-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.amenity-checkbox input {
+    width: auto;
+    /* Pour ne pas qu'il prenne 100% */
+    margin-bottom: 0;
 }

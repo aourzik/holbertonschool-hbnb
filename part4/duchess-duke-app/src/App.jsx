@@ -8,6 +8,7 @@ import SelectedPlace from './pages/SelectedPlace';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
+import AddPlace from './pages/AddPlace';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/places" element={<Places />} />
         <Route path="/estate/:id" element={<SelectedPlace />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/add-place" element={<AddPlace />} />
       </Routes>
 
       <Footer />

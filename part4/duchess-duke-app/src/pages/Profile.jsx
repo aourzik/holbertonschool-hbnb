@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Profile() {
@@ -68,6 +68,15 @@ export default function Profile() {
 
                     <h2 className="profile-name">{user?.name}</h2>
                     <p className="subtitle" style={{ marginBottom: '10px' }}>{user?.email}</p>
+
+                    {/* --- ACTION DE CRÉATION (À AJOUTER) --- */}
+                    <div className="profile-actions-luxury">
+                        <h3 className="section-title">Manage Your Heritage</h3>
+                        <p>Do you possess a residence worthy of the Ton's attention?</p>
+                        <Link to="/add-place" className="btn-gold-full add-estate-btn">
+                            <i className="fas fa-plus"></i> Register a New Estate
+                        </Link>
+                    </div>
 
                     <div className="profile-stats">
                         <div>
