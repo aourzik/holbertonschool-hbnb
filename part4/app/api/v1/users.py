@@ -118,3 +118,16 @@ class UserByEmail(Resource):
         if not user:
             return {"Error": "User not found"}, 404
         return user.to_dict(), 200
+
+@api.route('/me')
+class UserMe(Resource):
+    @jwt_required()
+    @api.response(200, 'Current user details retrieved successfully')
+    def get(self):
+        """Get current logged-in user details"""
+        # On récupère l'ID depuis le Token JWT
+        current_user_id = get_jwt_identity()
+        user = facade.get_user(current_user_id)
+        if not user:
+            return {"Error": "User not found"}, 404
+        return user.to_dict(), 200

@@ -9,13 +9,10 @@ app = create_app()
 
 def seed_all():
     with app.app_context():
-        print("--- 1. Nettoyage complet de la base ---")
-        Review.query.delete()
-        db.session.execute(db.table('place_amenity').delete())
-        Place.query.delete()
-        Amenity.query.delete()
-        User.query.delete()
-        db.session.commit()
+        print("--- 1. Reset Royal de la Base de Données ---")
+        db.drop_all()
+        db.create_all()
+        print("--- Structure synchronisée avec succès ---")
 
         print("--- 2. Création des Amenities ---")
         amenities_list = {

@@ -14,7 +14,7 @@ def create_app():
     # 1. Configuration CORS standard
     CORS(app, resources={r"/api/v1/*": {"origins": "*"}}, supports_credentials=True)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hbnb.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'
     app.config['JWT_SECRET_KEY'] = 'ton_secret_tres_secret'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

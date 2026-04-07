@@ -1,10 +1,44 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Profile() {
     const navigate = useNavigate();
     const { user, logout, isLoggedIn } = useContext(AuthContext);
+
+    // 1. On crée un état local pour stocker les reviews qu'on va récupérer
+    const [userReviews, setUserReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            fetch('/api/v1/users/me', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Erreur de récupération");
+                    return res.json();
+                })
+                .then(data => {
+                    // --- CRUCIAL : On enregistre les reviews reçues dans notre état ---
+                    if (data.reviews) {
+                        setUserReviews(data.reviews);
+                    }
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error("Erreur Profil:", err);
+                    setLoading(false);
+                });
+        }
+    }, [isLoggedIn]);
+
+    // 2. Supprime la ligne : const userReviews = user?.reviews || []; 
+    // (Elle ne sert plus car on utilise maintenant l'état userReviews défini au dessus)
 
     if (!isLoggedIn) {
         return (
@@ -20,9 +54,6 @@ export default function Profile() {
         logout();
         navigate('/');
     };
-
-    // On récupère les reviews de l'utilisateur s'il y en a
-    const userReviews = user?.reviews || [];
 
     return (
         <div className="selected-place-page">
@@ -44,7 +75,7 @@ export default function Profile() {
                             <span className="stat-label">Bookings</span>
                         </div>
                         <div>
-                            {/* Affichage dynamique du nombre de reviews */}
+                            {/* On affiche le nombre réel de reviews trouvées */}
                             <span className="stat-value">{userReviews.length}</span>
                             <span className="stat-label">Reviews</span>
                         </div>
@@ -67,25 +98,28 @@ export default function Profile() {
                         </h3>
 
                         <div className="activity-list">
-                            {userReviews.length > 0 ? (
-                                // On boucle sur les vraies reviews issues du Seed
-                                userReviews.map((rev, index) => (
-                                    <div key={index} className="review-item" style={{ marginBottom: '20px' }}>
-                                        <div className="review-header">
-                                            <span className="stars">
+                            {loading ? (
+                                <p style={{ textAlign: 'center', fontStyle: 'italic' }}>Loading your royal records...</p>
+                            ) : userReviews.length > 0 ? (
+                                userReviews.map((rev) => (
+                                    <div key={rev.id} className="review-item" style={{ marginBottom: '20px' }}>
+                                        <div className="review-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <span className="stars" style={{ color: 'var(--regency-gold)' }}>
                                                 {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
                                             </span>
-                                            <strong style={{ color: 'var(--regency-gold)', fontSize: '0.8rem' }}>
-                                                {rev.place_name || "Mansion Visit"}
+                                            <strong style={{ color: 'var(--regency-gold)', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                                                {rev.place_name}
                                             </strong>
                                         </div>
-                                        <p className="review-text">"{rev.text}"</p>
+                                        <p className="review-text" style={{ marginTop: '10px', fontStyle: 'italic' }}>
+                                            "{rev.text}"
+                                        </p>
                                     </div>
                                 ))
                             ) : (
-                                // Message de Lady Whistledown si aucune review
-                                <div className="review-item">
-                                    <p className="review-text" style={{ textAlign: 'center' }}>
+                                /* Si aucune review n'est trouvée */
+                                <div className="review-item" style={{ textAlign: 'center', padding: '20px' }}>
+                                    <p className="review-text">
                                         "It appears your social calendar is currently empty, My Lord.
                                         The season is young, and many estates await your presence."
                                     </p>

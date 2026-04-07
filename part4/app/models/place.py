@@ -74,8 +74,8 @@ class Place(BaseModel):
 
 
     def __init__(self, title, description=None, price=0.0, latitude=0.0,
-             longitude=0.0, owner_id=None, user_id=None, is_available=True):
-        super().__init__()
+             longitude=0.0, owner_id=None, user_id=None, is_available=True, **kwargs):
+        super().__init__(**kwargs)
         resolved_user_id = user_id if user_id is not None else owner_id
         self.title = self._validate_title(title)
         self.description = self._validate_description(description)
@@ -161,5 +161,5 @@ class Place(BaseModel):
         if self.owner:
             data["owner"] = self.owner.to_dict()
             data["amenities"] = [amenity.to_dict() for amenity in self.amenities]
-
+            data["reviews"] = [review.to_dict() for review in self.reviews]
         return data
