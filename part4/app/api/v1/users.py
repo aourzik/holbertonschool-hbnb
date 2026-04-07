@@ -20,23 +20,15 @@ update_user_model = api.model('UpdateUser', {
 })
 @api.route('/')
 class UserList(Resource):
-    @jwt_required()
     @api.expect(user_model)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Invalid input data or email already registered')
     def post(self):
         """Register a new user"""
-        current_user = get_jwt()
-        if not current_user.get('is_admin'):
-            return {'Error': 'Admin privileges required'}, 403
-        safe_data = {
-            "first_name": api.payload.get("first_name"),
-            "last_name": api.payload.get("last_name"),
-            "email": api.payload.get("email"),
-            "password": api.payload.get("password")
-        }
+        data = api.payload
+        data['is_admin'] = False
         try:
-            user = facade.create_user(safe_data)
+            user = facade.create_user(data)
             return {
                 "id": user.id,
                 "message": "User successfully created"

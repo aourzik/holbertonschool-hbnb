@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { AuthContext } from '../context/AuthContext';
@@ -276,7 +276,7 @@ export default function SelectedPlace() {
                         </form>
 
                         <div className="modal-footer">
-                            <p>Not yet registered? <a href="/signup">Apply for Membership</a></p>
+                            <p>Not yet registered? <Link to="/signup">Apply for Membership</Link></p>
                         </div>
                     </div>
                 </div>

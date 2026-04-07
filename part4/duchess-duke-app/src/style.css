@@ -2010,3 +2010,22 @@ select {
     outline: none;
     border-color: var(--regency-gold);
 }
+
+/* -- SIGNUP PAGE --- */
+.input-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.error-message-royal {
+    background: #fff0f0;
+    color: #c0392b;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    border-left: 4px solid #c0392b;
+    font-style: italic;
+}
