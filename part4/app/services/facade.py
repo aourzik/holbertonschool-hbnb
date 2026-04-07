@@ -137,9 +137,13 @@ class HBnBFacade:
         place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place not found")
-
-        for review in self.get_review_by_place(place_id):
+        reviews = self.get_review_by_place(place_id)
+        for review in reviews:
             self.delete_review(review.id)
+        bookings = Booking.query.filter_by(place_id=place_id).all()
+        for booking in bookings:
+            db.session.delete(booking)
+        db.session.commit()
         self.place_repo.delete(place_id)
 
 ################ USER ##################### 
