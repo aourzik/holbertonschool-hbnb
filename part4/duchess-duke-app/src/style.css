@@ -2369,15 +2369,40 @@ select {
 /* --- TABLETTES ET GRANDS MOBILES (max 1024px) --- */
 @media (max-width: 1024px) {
 
+    /* Ajout de marges de sécurité sur les côtés pour tout le contenu */
+    .selected-place-page .container,
+    .places-container,
+    .profile-wrapper {
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+        max-width: 100%;
+    }
+
+    /* Le carrousel sur tablette garde une belle prestance avec des marges */
+    .carousel-container {
+        height: 450px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+
+    /* Réorganisation des colonnes */
     .profile-wrapper,
-    .main-layout-grid {
+    .main-layout-grid,
+    .place-content-layout {
         grid-template-columns: 1fr;
-        /* On passe tout en une seule colonne */
-        padding: 0 20px;
+        /* On empile les éléments */
+        gap: 40px;
+    }
+
+    /* On décolle les infos principales du bord gauche */
+    .place-main-info {
+        padding-left: 0;
     }
 
     .profile-sidebar,
-    .sticky-map {
+    .sticky-map,
+    .booking-sidebar {
         position: relative;
         top: 0;
         width: 100%;
@@ -2390,12 +2415,27 @@ select {
 
     .estates-list-grid {
         grid-template-columns: repeat(2, 1fr);
-        /* 2 colonnes sur tablette */
     }
 }
 
 /* --- SMARTPHONES (max 768px) --- */
 @media (max-width: 768px) {
+
+    /* Ajout de marges globales sur les pages de détails */
+    .selected-place-page .container,
+    .container-small,
+    .places-container {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    /* Carrousel avec marges */
+    .carousel-container {
+        height: 350px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 15px;
+    }
 
     /* Navigation Mobile */
     .navbar {
@@ -2409,36 +2449,26 @@ select {
         justify-content: center;
     }
 
-    /* Hero Section */
+    /* Contenu du Manoir */
+    .place-main-info,
+    .reviews-section {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
     .hero-content h1 {
         font-size: 2.5rem;
-        /* Réduction du titre principal */
     }
 
-    .hero-content h3 {
-        font-size: 1.1rem;
-    }
-
-    /* Grilles et Sections */
     .about-grid,
     .estates-list-grid,
     .amenities-grid,
     .input-group-row {
         grid-template-columns: 1fr;
-        /* Passage en mode 100% largeur */
     }
 
     .title-luxury {
         font-size: 2.2rem;
-    }
-
-    /* Page Détail Manoir */
-    .carousel-container {
-        height: 350px;
-    }
-
-    .place-header-detail h1 {
-        font-size: 1.8rem;
     }
 
     .place-content-layout {
@@ -2446,24 +2476,6 @@ select {
         gap: 30px;
     }
 
-    /* Profil et Formulaires */
-    .container-small,
-    .login-container {
-        padding: 30px 20px;
-        width: 100%;
-    }
-
-    .profile-sidebar {
-        padding: 25px 15px;
-    }
-
-    /* Modal */
-    .modal-content {
-        padding: 25px 15px;
-        width: 95%;
-    }
-
-    /* Cartes de Réservations dans le profil */
     .res-card {
         flex-direction: column;
         height: auto;
@@ -2472,13 +2484,6 @@ select {
     .res-image {
         width: 100%;
         height: 150px;
-    }
-
-    /* Filtres */
-    .filters-dropdown {
-        flex-direction: column;
-        gap: 15px;
-        width: 90%;
     }
 }
 
